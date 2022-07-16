@@ -13,7 +13,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+use App\Http\Controllers\TaskController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('task')->name('task.')->group(callback: function () {
+    Route::get(uri: '/', action: [TaskController::class, 'all'])->name('all');
+    Route::get(uri: '/{task}', action: [TaskController::class, 'view'])->name('view');
 });
