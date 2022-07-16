@@ -42,4 +42,10 @@ class TaskController extends Controller
         $task->save();
         return response()->json(data: $task, status: SymfonyResponse::HTTP_ACCEPTED);
     }
+
+    public function delete(Task $task): JsonResponse
+    {
+        $task->deleteOrFail();
+        return response()->json(status: SymfonyResponse::HTTP_ACCEPTED);
+    }
 }

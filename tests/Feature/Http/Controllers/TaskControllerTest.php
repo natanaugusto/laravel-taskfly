@@ -70,3 +70,13 @@ test(description: 'Task Controller/API Update', closure: function () {
         ->assertJsonFragment(['title' => $nTitle]);
     $this->assertDatabaseHas(table: Task::class, data: ['id' => $task->id, 'title' => $nTitle]);
 });
+
+test(description: 'Task Controller/API Delete', closure: function () {
+   $task = Task::factory()->create();
+
+   $response = $this->json(
+       method: SymfonyRequest::METHOD_DELETE,
+       uri: route(name: 'task.delete', parameters: ['task' => $task])
+   );
+   $response->assertStatus(status: SymfonyResponse::HTTP_ACCEPTED);
+});
