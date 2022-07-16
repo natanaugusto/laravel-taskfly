@@ -22,4 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('task')->name('task.')->group(callback: function () {
     Route::get(uri: '/', action: [TaskController::class, 'all'])->name('all');
     Route::get(uri: '/{task}', action: [TaskController::class, 'view'])->name('view');
+    Route::post(uri: '/', action: [TaskController::class, 'store'])->name('store');
 });

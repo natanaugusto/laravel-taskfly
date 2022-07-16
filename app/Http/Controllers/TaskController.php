@@ -20,4 +20,16 @@ class TaskController extends Controller
     {
         return response()->json($task);
     }
+
+    public function store(Request $request): JsonResponse
+    {
+        $request->validate(rules: [
+            'title' => 'required',
+            'owner_id' => ['required', 'exists:users,id'],
+            'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT]
+        ]);
+
+        $task = Task::create($request->all());
+        return response()->json(data: $task, status: SymfonyResponse::HTTP_CREATED);
+    }
 }
