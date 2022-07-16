@@ -32,4 +32,14 @@ class TaskController extends Controller
         $task = Task::create($request->all());
         return response()->json(data: $task, status: SymfonyResponse::HTTP_CREATED);
     }
+
+    public function update(Request $request, Task $task): JsonResponse
+    {
+        $task->fill(attributes: $request->all());
+        if ($task->isClean()) {
+            return response()->json(status: SymfonyResponse::HTTP_NOT_MODIFIED);
+        }
+        $task->save();
+        return response()->json(data: $task, status: SymfonyResponse::HTTP_ACCEPTED);
+    }
 }

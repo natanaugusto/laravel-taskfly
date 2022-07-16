@@ -51,3 +51,22 @@ test(description: 'Task Controller/API Create', closure: function () {
         );
     $this->assertDatabaseHas(table: Task::class, data: $task);
 });
+
+test(description: 'Task Controller/API Update', closure: function () {
+    $task = Task::factory()->create();
+    $response = $this->json(
+        method: SymfonyRequest::METHOD_PUT,
+        uri: route(name: 'task.update', parameters: ['task' => $task]),
+        data: $task->toArray()
+    );
+    $response->assertStatus(status: SymfonyResponse::HTTP_NOT_MODIFIED);
+    $nTitle = 'New Task Title';
+    $response = $this->json(
+        method: SymfonyRequest::METHOD_PUT,
+        uri: route(name: 'task.update', parameters: ['task' => $task]),
+        data: ['title' => $nTitle]
+    );
+    $response->assertStatus(status:  SymfonyResponse::HTTP_ACCEPTED)
+        ->assertJsonFragment(['title' => $nTitle]);
+    $this->assertDatabaseHas(table: Task::class, data: ['id' => $task->id, 'title' => $nTitle]);
+});
