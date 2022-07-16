@@ -2,7 +2,6 @@
 use App\Models\Task;
 
 use Illuminate\Support\Arr;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 
 test(description: 'Task Model/Factory CRUD', closure: function () {
     $task = Task::factory()->create();
@@ -20,7 +19,7 @@ test(description: 'Task Model/Factory CRUD', closure: function () {
 test(description: 'Task mass assigment', closure: function () {
     $task = Task::create(Arr::only(
         array: Task::factory()->makeOne()->toArray(),
-        keys: ['owner_id', 'title']
+        keys: ['creator_id', 'title']
     ));
     $this->assertInstanceOf(expected: Task::class, actual: $task);
     $this->assertTrue(condition: $task->exists);

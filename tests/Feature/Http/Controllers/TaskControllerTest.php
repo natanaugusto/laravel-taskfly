@@ -38,7 +38,7 @@ test(description: 'Task Controller/API Create', closure: function () {
 
    $task = Arr::only(
        array:Task::factory()->makeOne()->toArray(),
-       keys: ['owner_id', 'title', 'due']
+       keys: ['creator_id', 'title', 'due']
    );
     $response = $this->json(
         method: SymfonyRequest::METHOD_POST,

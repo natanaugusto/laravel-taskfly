@@ -25,7 +25,7 @@ class TaskController extends Controller
     {
         $request->validate(rules: [
             'title' => 'required',
-            'owner_id' => ['required', 'exists:users,id'],
+            'creator_id' => ['required', 'exists:users,id'],
             'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT]
         ]);
 

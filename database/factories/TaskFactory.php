@@ -20,7 +20,7 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'owner_id' => User::factory(),
+            'creator_id' => User::factory(),
             'title' => $this->faker->name,
             'due' => Carbon::now()->addMinute(10)->format(Task::DUE_DATETIME_FORMAT),
             'status' => $this->faker->randomElement(['todo', 'doing', 'done']),

@@ -18,12 +18,13 @@ return new class extends Migration
         Schema::create(table: 'tasks', callback: function (Blueprint $table) {
             $table->id();
             $table->uuid();
-            $table->foreignIdFor(model: User::class, column: 'owner_id');
+            $table->foreignIdFor(model: User::class, column: 'creator_id');
+            $table->string(column: 'shortcode', length: 10)->unique();
             $table->string(column: 'title');
             $table->dateTime(column: 'due')->default(DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->enum(column: 'status', allowed: ['todo', 'doing', 'done'])->default('todo');
             $table->timestamps();
-            $table->index(columns: ['uuid', 'owner_id', 'title', 'due', 'status']);
+            $table->index(columns: ['uuid', 'shortcode', 'creator_id', 'title', 'due', 'status']);
         });
     }
 
