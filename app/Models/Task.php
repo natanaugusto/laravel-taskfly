@@ -13,6 +13,8 @@ class Task extends Model
     const DUE_DATETIME_FORMAT = 'Y-m-d H:i:s';
     const NAMESPACE_UUID = 'c8bc2dc4-0495-11ed-b939-0242ac120002';
 
+    protected $fillable = ['owner_id', 'title', 'due'];
+
     public function save(array $options = []): bool
     {
         if (!$this->exists && empty($this->uuid)) {

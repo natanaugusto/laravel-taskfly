@@ -1,9 +1,10 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -19,8 +20,8 @@ return new class extends Migration
             $table->uuid();
             $table->foreignIdFor(model: User::class, column: 'owner_id');
             $table->string(column: 'title');
-            $table->dateTime(column: 'due');
-            $table->enum(column: 'status', allowed: ['todo', 'doing', 'done']);
+            $table->dateTime(column: 'due')->default(DB::raw(value: 'CURRENT_TIMESTAMP'));
+            $table->enum(column: 'status', allowed: ['todo', 'doing', 'done'])->default('todo');
             $table->timestamps();
             $table->index(columns: ['uuid', 'owner_id', 'title', 'due', 'status']);
         });
