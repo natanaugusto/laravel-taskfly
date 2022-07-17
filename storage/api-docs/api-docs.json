@@ -10,7 +10,13 @@
                 "operationId": "53a9a10f1c14816e8d588997893d9dae",
                 "responses": {
                     "200": {
-                        "description": "List all tasks"
+                        "description": "List all tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": "[{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-1716:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}]"
+                            }
+                        }
                     },
                     "204": {
                         "description": "No content"
