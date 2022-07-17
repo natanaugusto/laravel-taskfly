@@ -4,8 +4,25 @@ namespace App\Models;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OpenApi\Annotations as OA;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *     schema="Task",
+ *     type="object",
+ *     required={"creator_id","title","due"},
+ *     @OA\Property(property="id",type="integer"),
+ *     @OA\Property(property="uid",type="string<UID>"),
+ *     @OA\Property(property="creator_id",type="integer<User>"),
+ *     @OA\Property(property="title",type="string"),
+ *     @OA\Property(property="shortcode",type="string"),
+ *     @OA\Property(property="due",type="DateTime"),
+ *     @OA\Property(property="status",type="string"),
+ *     @OA\Property(property="created_at",type="DateTime"),
+ *     @OA\Property(property="updated_at",type="DateTime")
+ * )
+ */
 class Task extends Model
 {
     use HasFactory;

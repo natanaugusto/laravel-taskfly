@@ -13,7 +13,12 @@
                         "description": "List all tasks",
                         "content": {
                             "application/json": {
-                                "schema": {},
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Task"
+                                    }
+                                },
                                 "example": "[{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-1716:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}]"
                             }
                         }
@@ -77,6 +82,47 @@
                         "description": "Not Found"
                     }
                 }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Task": {
+                "required": [
+                    "creator_id",
+                    "title",
+                    "due"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "uid": {
+                        "type": "string<UID>"
+                    },
+                    "creator_id": {
+                        "type": "integer<User>"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "shortcode": {
+                        "type": "string"
+                    },
+                    "due": {
+                        "type": "DateTime"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "DateTime"
+                    },
+                    "updated_at": {
+                        "type": "DateTime"
+                    }
+                },
+                "type": "object"
             }
         }
     }

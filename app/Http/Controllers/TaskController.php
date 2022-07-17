@@ -17,6 +17,8 @@ class TaskController extends Controller
      *         response="200",
      *         description="List all tasks",
      *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Task"),
      *             example="[{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-1716:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}]"
      *         )
      *     ),
