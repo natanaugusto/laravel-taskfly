@@ -11,6 +11,9 @@
                 "responses": {
                     "200": {
                         "description": "List all tasks"
+                    },
+                    "204": {
+                        "description": "No content"
                     }
                 }
             },
@@ -19,6 +22,12 @@
                 "responses": {
                     "201": {
                         "description": "Created a task"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 }
             }
@@ -29,6 +38,9 @@
                 "responses": {
                     "200": {
                         "description": "View a task"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             },
@@ -37,6 +49,15 @@
                 "responses": {
                     "202": {
                         "description": "Updated a task"
+                    },
+                    "304": {
+                        "description": "Not modified"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 }
             },
@@ -45,6 +66,9 @@
                 "responses": {
                     "202": {
                         "description": "Deleted a task"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }

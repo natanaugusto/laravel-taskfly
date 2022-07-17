@@ -22,6 +22,10 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="List all tasks"
+     *     ),
+     *     @OA\Response(
+     *         response="204",
+     *         description="No content"
      *     )
      * )
      */
@@ -38,6 +42,10 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="View a task"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found"
      *     )
      * )
      */
@@ -52,6 +60,14 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="201",
      *         description="Created a task"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found"
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Validation error"
      *     )
      * )
      */
@@ -73,6 +89,18 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="202",
      *         description="Updated a task"
+     *     ),
+     *     @OA\Response(
+     *         response="304",
+     *         description="Not modified"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found"
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Validation error"
      *     )
      * )
      */
@@ -92,6 +120,10 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="202",
      *         description="Deleted a task"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found"
      *     )
      * )
      */
