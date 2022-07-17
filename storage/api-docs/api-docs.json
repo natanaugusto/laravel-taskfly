@@ -1,0 +1,53 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Taskfly API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/task": {
+            "get": {
+                "operationId": "53a9a10f1c14816e8d588997893d9dae",
+                "responses": {
+                    "200": {
+                        "description": "List all tasks"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "752c97798f6581341105be3afd0d061a",
+                "responses": {
+                    "201": {
+                        "description": "Created a task"
+                    }
+                }
+            }
+        },
+        "/api/task/{task}": {
+            "get": {
+                "operationId": "ab86af008730e8bc5d9ed5192182a3a7",
+                "responses": {
+                    "200": {
+                        "description": "View a task"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "b931539c1d6bc7b0d2d28636754dca4a",
+                "responses": {
+                    "202": {
+                        "description": "Updated a task"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "3cf47151dcf092ecf26e634b08a6188a",
+                "responses": {
+                    "202": {
+                        "description": "Deleted a task"
+                    }
+                }
+            }
+        }
+    }
+}
