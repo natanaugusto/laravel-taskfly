@@ -38,9 +38,23 @@ class TaskController extends Controller
     /**
      * @OA\Get(
      *     path="/api/task/{task}",
+     *     @OA\Parameter(
+     *          name="task",
+     *          in="path",
+     *          description="Task ID",
+     *          required=true,
+     *          @OA\Schema(
+     *               type="integer"
+     *          )
+     *      ),
      *     @OA\Response(
      *         response="200",
-     *         description="View a task"
+     *         description="View a task",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Task"),
+     *             example="{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-17 16:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}"
+     *         )
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -67,7 +81,8 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="422",
      *         description="Validation error"
-     *     )
+     *     ),
+     *     @OA\RequestBody(ref="#/components/requestBodies/Task")
      * )
      */
     public function store(Request $request): JsonResponse
@@ -85,6 +100,15 @@ class TaskController extends Controller
     /**
      * @OA\Put(
      *     path="/api/task/{task}",
+     *     @OA\Parameter(
+     *          name="task",
+     *          in="path",
+     *          description="Task ID",
+     *          required=true,
+     *          @OA\Schema(
+     *               type="integer"
+     *          )
+     *      ),
      *     @OA\Response(
      *         response="202",
      *         description="Updated a task"
@@ -100,7 +124,8 @@ class TaskController extends Controller
      *     @OA\Response(
      *         response="422",
      *         description="Validation error"
-     *     )
+     *     ),
+     *     @OA\RequestBody(ref="#/components/requestBodies/Task")
      * )
      */
     public function update(Request $request, Task $task): JsonResponse
@@ -116,6 +141,15 @@ class TaskController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/task/{task}",
+     *     @OA\Parameter(
+     *          name="task",
+     *          in="path",
+     *          description="Task ID",
+     *          required=true,
+     *          @OA\Schema(
+     *               type="integer"
+     *          )
+     *      ),
      *     @OA\Response(
      *         response="202",
      *         description="Deleted a task"

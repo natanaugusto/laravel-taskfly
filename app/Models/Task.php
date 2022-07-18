@@ -13,14 +13,20 @@ use Illuminate\Database\Eloquent\Model;
  *     type="object",
  *     required={"creator_id","title","due"},
  *     @OA\Property(property="id",type="integer"),
- *     @OA\Property(property="uid",type="string<UID>"),
- *     @OA\Property(property="creator_id",type="integer<User>"),
+ *     @OA\Property(property="uid",type="string"),
+ *     @OA\Property(property="creator_id",type="integer"),
  *     @OA\Property(property="title",type="string"),
  *     @OA\Property(property="shortcode",type="string"),
- *     @OA\Property(property="due",type="DateTime"),
+ *     @OA\Property(property="due",type="string"),
  *     @OA\Property(property="status",type="string"),
- *     @OA\Property(property="created_at",type="DateTime"),
- *     @OA\Property(property="updated_at",type="DateTime")
+ *     @OA\Property(property="created_at",type="string"),
+ *     @OA\Property(property="updated_at",type="string")
+ * ),
+ * @OA\RequestBody(
+ *     request="Task",
+ *     description="Task request body",
+ *     required=true,
+ *     @OA\JsonContent(ref="#/components/schemas/Task"),
  * )
  */
 class Task extends Model

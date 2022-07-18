@@ -30,6 +30,9 @@
             },
             "post": {
                 "operationId": "752c97798f6581341105be3afd0d061a",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/Task"
+                },
                 "responses": {
                     "201": {
                         "description": "Created a task"
@@ -46,9 +49,31 @@
         "/api/task/{task}": {
             "get": {
                 "operationId": "ab86af008730e8bc5d9ed5192182a3a7",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "View a task"
+                        "description": "View a task",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Task"
+                                    }
+                                },
+                                "example": "{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-17 16:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}"
+                            }
+                        }
                     },
                     "404": {
                         "description": "Not Found"
@@ -57,6 +82,20 @@
             },
             "put": {
                 "operationId": "b931539c1d6bc7b0d2d28636754dca4a",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/Task"
+                },
                 "responses": {
                     "202": {
                         "description": "Updated a task"
@@ -74,6 +113,17 @@
             },
             "delete": {
                 "operationId": "3cf47151dcf092ecf26e634b08a6188a",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "202": {
                         "description": "Deleted a task"
@@ -98,10 +148,10 @@
                         "type": "integer"
                     },
                     "uid": {
-                        "type": "string<UID>"
+                        "type": "string"
                     },
                     "creator_id": {
-                        "type": "integer<User>"
+                        "type": "integer"
                     },
                     "title": {
                         "type": "string"
@@ -110,19 +160,66 @@
                         "type": "string"
                     },
                     "due": {
-                        "type": "DateTime"
+                        "type": "string"
                     },
                     "status": {
                         "type": "string"
                     },
                     "created_at": {
-                        "type": "DateTime"
+                        "type": "string"
                     },
                     "updated_at": {
-                        "type": "DateTime"
+                        "type": "string"
                     }
                 },
                 "type": "object"
+            },
+            "User": {
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "password": {
+                        "type": "string<Hash>"
+                    },
+                    "remember_token": {
+                        "type": "string<Token>"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "requestBodies": {
+            "Task": {
+                "description": "Task request body",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Task"
+                        }
+                    }
+                }
             }
         }
     }
