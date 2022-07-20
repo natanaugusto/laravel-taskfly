@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
@@ -90,10 +91,18 @@ class TaskController extends Controller
         $request->validate(rules: [
             'title' => 'required',
             'creator_id' => ['required', 'exists:users,id'],
-            'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT]
+            'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT],
+            'users.*' => ['exists:users,id'],
         ]);
+        if ($request->has(key: 'users')) {
+            $users = $request->input(key: 'users');
+        }
+        $task = Task::create($request->except(keys: ['users']));
+        if (!empty($users)) {
+            $users = User::findMany($users);
+            $task->users()->saveMany($users);
+        }
 
-        $task = Task::create($request->all());
         return response()->json(data: $task, status: SymfonyResponse::HTTP_CREATED);
     }
 
@@ -136,6 +145,18 @@ class TaskController extends Controller
         }
         $task->save();
         return response()->json(data: $task, status: SymfonyResponse::HTTP_ACCEPTED);
+    }
+
+    public function relate(Request $request, Task $task): JsonResponse
+    {
+        $request->validate(rules: [
+            'users.*' => ['required', 'exists:users,id'],
+        ]);
+        $users = $request->input(key: 'users');
+        $users = User::findMany($users);
+        $task->users()->saveMany($users);
+
+        return response()->json(status: SymfonyResponse::HTTP_ACCEPTED);
     }
 
     /**

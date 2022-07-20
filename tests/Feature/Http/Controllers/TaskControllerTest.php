@@ -93,3 +93,43 @@ test(description: 'Task Controller/API Delete', closure: function () {
         );
     $response->assertStatus(status: SymfonyResponse::HTTP_ACCEPTED);
 });
+
+test(description: 'Create Task with users related', closure: function () {
+    $task = Arr::only(
+        array: Task::factory()->makeOne()->toArray(),
+        keys: ['creator_id', 'title', 'due']
+    );
+    $users = User::factory()->count(3)->create();
+    $task['users'] = $users->pluck('id')->all();
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)
+        ->json(
+            method: SymfonyRequest::METHOD_POST,
+            uri: route(name: 'task.store'),
+            data: $task
+        );
+    unset($task['users']);
+    $response->assertStatus(status: SymfonyResponse::HTTP_CREATED)
+        ->assertJsonFragment(
+            data: $task
+        );
+    $this->assertDatabaseHas(table: Task::class, data: $task);
+});
+
+test(description: 'Relate users with a Task', closure: function () {
+    $task = Task::factory()->create();
+    $users = User::factory()->count(3)->create();
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)
+        ->json(
+            method: SymfonyRequest::METHOD_PUT,
+            uri: route(name: 'task.relate', parameters: ['task' => $task]),
+            data: [
+                'users' => $users->pluck('id')->all()
+            ]
+        );
+    $response->assertStatus(status: SymfonyResponse::HTTP_ACCEPTED);
+    $task->refresh();
+    $taskUsers = array_map(callback: fn ($user) => Arr::except($user, ['pivot']), array: $task->users->toArray());
+    $this->assertEquals(expected: $users->toArray(), actual: $taskUsers);
+});
