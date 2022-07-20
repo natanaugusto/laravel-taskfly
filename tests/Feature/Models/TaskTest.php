@@ -1,4 +1,5 @@
 <?php
+use App\Models\User;
 use App\Models\Task;
 
 use Illuminate\Support\Arr;
@@ -31,4 +32,17 @@ test(description: 'Task mass assigment', closure: function () {
     $task = Task::create($task);
     $task->refresh();
     $this->assertEquals(expected: 'todo', actual: $task->status);
+});
+
+test(description: 'Creator relationship', closure: function () {
+    $task = Task::factory()->create();
+    $this->assertInstanceOf(expected: User::class, actual: $task->creator);
+
+    $users = User::factory()->count(3)->make();
+    $task->users()->saveMany($users);
+    $this->assertCount(expectedCount: 3, haystack: $task->users);
+
+    $task->users()->save(User::factory()->create());
+    $task->refresh();
+    $this->assertCount(expectedCount: 4, haystack: $task->users);
 });

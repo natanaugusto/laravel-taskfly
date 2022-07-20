@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use OpenApi\Annotations as OA;
@@ -76,5 +79,15 @@ class Task extends Model
             pad_type: STR_PAD_LEFT
         );
         return "#{$short}-{$code}";
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(related: User::class, foreignKey: 'creator_id');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(related: User::class, table: 'user_task');
     }
 }
