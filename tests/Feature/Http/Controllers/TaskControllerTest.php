@@ -45,13 +45,14 @@ test(description: 'Task Controller/API Create', closure: function () {
 
     $task = Arr::only(
         array: Task::factory()->makeOne()->toArray(),
-        keys: ['creator_id', 'title', 'due']
+        keys: ['title', 'due']
     );
     $response = $this->json(
         method: SymfonyRequest::METHOD_POST,
         uri: route(name: 'task.store'),
         data: $task
     );
+    $task['creator_id'] = $user->id;
     $response->assertStatus(status: SymfonyResponse::HTTP_CREATED)
         ->assertJsonFragment(
             data: $task
@@ -97,7 +98,7 @@ test(description: 'Task Controller/API Delete', closure: function () {
 test(description: 'Create Task with users related', closure: function () {
     $task = Arr::only(
         array: Task::factory()->makeOne()->toArray(),
-        keys: ['creator_id', 'title', 'due']
+        keys: ['title', 'due']
     );
     $users = User::factory()->count(3)->create();
     $task['users'] = $users->pluck('id')->all();
@@ -109,6 +110,7 @@ test(description: 'Create Task with users related', closure: function () {
             data: $task
         );
     unset($task['users']);
+    $task['creator_id'] = $user->id;
     $response->assertStatus(status: SymfonyResponse::HTTP_CREATED)
         ->assertJsonFragment(
             data: $task

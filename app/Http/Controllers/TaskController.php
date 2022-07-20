@@ -90,14 +90,16 @@ class TaskController extends Controller
     {
         $request->validate(rules: [
             'title' => 'required',
-            'creator_id' => ['required', 'exists:users,id'],
             'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT],
             'users.*' => ['exists:users,id'],
         ]);
         if ($request->has(key: 'users')) {
             $users = $request->input(key: 'users');
         }
-        $task = Task::create($request->except(keys: ['users']));
+        $task = Task::create(array_merge(
+            $request->except(keys: ['users']),
+            ['creator_id' => $request->user()->id]
+        ));
         if (!empty($users)) {
             $users = User::findMany($users);
             $task->users()->saveMany($users);
