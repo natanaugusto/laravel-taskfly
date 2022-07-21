@@ -22,14 +22,14 @@ test(description: 'Task Controller/API Read', closure: function () {
     $tasks = Task::factory()->count(10)->create();
     $response = $this->json(method: SymfonyRequest::METHOD_GET, uri: route(name: 'task.all'));
     $response->assertStatus(status: SymfonyResponse::HTTP_OK)
-        ->assertJson(value: $tasks->toArray());
+        ->assertJsonFragment(data: ['data' => $tasks->toArray()]);
 
     $response = $this->json(
         method: SymfonyRequest::METHOD_GET,
         uri: route(name: 'task.view', parameters: ['task' => $tasks[1]])
     );
     $response->assertStatus(status: SymfonyResponse::HTTP_OK)
-        ->assertJson(value: $tasks[1]->toArray());
+        ->assertJsonFragment(data: $tasks[1]->toArray());
 });
 
 test(description: 'Task Controller/API Create', closure: function () {

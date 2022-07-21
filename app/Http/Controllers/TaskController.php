@@ -31,9 +31,10 @@ class TaskController extends Controller
      */
     public function all(): JsonResponse
     {
-        $tasks = Task::all();
-        return $tasks->count() > 0 ?
-            response()->json(data: Task::all()) : response()->json(status: SymfonyResponse::HTTP_NO_CONTENT);
+        $tasks = Task::paginate();
+        return $tasks->count() > 0
+            ? response()->json(data: $tasks)
+            : response()->json(status: SymfonyResponse::HTTP_NO_CONTENT);
     }
 
     /**
