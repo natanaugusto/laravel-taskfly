@@ -133,6 +133,36 @@
                     }
                 }
             }
+        },
+        "/api/task/{task}/relate": {
+            "post": {
+                "operationId": "258ff4b9458c372058c2209ba5b925a7",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/Task"
+                },
+                "responses": {
+                    "202": {
+                        "description": "Users related with a task"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
         }
     },
     "components": {

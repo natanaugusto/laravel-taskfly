@@ -149,6 +149,33 @@ class TaskController extends Controller
         return response()->json(data: $task, status: SymfonyResponse::HTTP_ACCEPTED);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/task/{task}/relate",
+     *     @OA\Parameter(
+     *          name="task",
+     *          in="path",
+     *          description="Task ID",
+     *          required=true,
+     *          @OA\Schema(
+     *               type="integer"
+     *          )
+     *      ),
+     *     @OA\Response(
+     *         response="202",
+     *         description="Users related with a task"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found"
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Validation error"
+     *     ),
+     *     @OA\RequestBody(ref="#/components/requestBodies/Task")
+     * )
+     */
     public function relate(Request $request, Task $task): JsonResponse
     {
         $request->validate(rules: [
