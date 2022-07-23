@@ -1,5 +1,4 @@
 <?php
-use App\Models\Task;
 use App\Models\User;
 use App\Http\Livewire\TableComponent;
 
@@ -13,6 +12,5 @@ test(description: 'Mount TableComponent', closure: function () {
             name: TableComponent::class,
             params: ['collection' => User::paginate()]
         )
-        ->assertSee()
         ->assertViewIs(name: 'livewire.table-component');
 });
