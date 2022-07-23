@@ -218,22 +218,19 @@
                         "type": "string"
                     },
                     "email_verified_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "string"
                     },
                     "password": {
-                        "type": "string<Hash>"
+                        "type": "string"
                     },
                     "remember_token": {
-                        "type": "string<Token>"
+                        "type": "string"
                     },
                     "created_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "string"
                     },
                     "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "string"
                     }
                 },
                 "type": "object"

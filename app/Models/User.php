@@ -18,11 +18,11 @@ use OpenApi\Annotations as OA;
  *     required={"name","email","password"},
  *     @OA\Property(property="id",type="integer"),
  *     @OA\Property(property="name",type="string"),
- *     @OA\Property(property="email_verified_at",type="datetime"),
- *     @OA\Property(property="password",type="string<Hash>"),
- *     @OA\Property(property="remember_token",type="string<Token>"),
- *     @OA\Property(property="created_at",type="datetime"),
- *     @OA\Property(property="updated_at",type="datetime"),
+ *     @OA\Property(property="email_verified_at",type="string"),
+ *     @OA\Property(property="password",type="string"),
+ *     @OA\Property(property="remember_token",type="string"),
+ *     @OA\Property(property="created_at",type="string"),
+ *     @OA\Property(property="updated_at",type="string"),
  * )
  */
 class User extends Authenticatable
