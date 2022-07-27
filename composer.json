@@ -13,7 +13,8 @@
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.10",
         "pestphp/pest": "^1.16",
-        "pestphp/pest-plugin-laravel": "^1.1"
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "rappasoft/laravel-livewire-tables": "^2.8"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
