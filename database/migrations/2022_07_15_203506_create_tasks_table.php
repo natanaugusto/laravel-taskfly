@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Enums\Status;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,14 +16,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(table: 'tasks', callback: function (Blueprint $table) {
+        Schema::create(table: 'tasks', callback: static function (Blueprint $table) {
             $table->id();
             $table->uuid();
             $table->foreignIdFor(model: User::class, column: 'creator_id');
             $table->string(column: 'shortcode', length: 10)->unique();
             $table->string(column: 'title');
             $table->dateTime(column: 'due')->default(DB::raw(value: 'CURRENT_TIMESTAMP'));
-            $table->enum(column: 'status', allowed: ['todo', 'doing', 'done'])->default('todo');
+            $table->enum(column: 'status', allowed: array_map(
+                callback: static fn($enum) => $enum->value,
+                array: Status::cases())
+            )->default(Status::DEFAULT->value);
             $table->timestamps();
             $table->index(columns: ['uuid', 'shortcode', 'creator_id', 'title', 'due', 'status']);
         });
