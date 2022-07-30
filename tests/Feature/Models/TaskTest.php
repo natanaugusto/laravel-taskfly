@@ -17,7 +17,7 @@ test(description: 'Task Model/Factory CRUD', closure: function () {
     $this->assertDatabaseMissing(table: Task::class, data: ['id' => $task->id]);
 });
 
-test(description: 'Task mass assigment', closure: function () {
+test(description: 'Task mass assignments', closure: function () {
     $task = Task::create(Arr::only(
         array: Task::factory()->makeOne()->toArray(),
         keys: ['creator_id', 'title']
