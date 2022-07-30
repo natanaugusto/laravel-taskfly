@@ -2,17 +2,22 @@
 
 namespace App\Http\Livewire;
 
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Task;
+use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
 
 class TaskTable extends DataTableComponent
 {
+    const PRIMARY_KEY = 'id';
+    const TABLE_WRAPPER_ATTRS = [
+            'default' => false,
+            'class' => 'shadow border-b border-gray-200 dark:border-gray-700 sm:rounded-lg'
+    ];
     protected $model = Task::class;
 
     public function configure(): void
     {
-        $this->setPrimaryKey(key: 'id');
+        $this->setPrimaryKey(key: self::PRIMARY_KEY);
         $this->setTableWrapperAttributes([
             'default' => false,
             'class' => 'shadow border-b border-gray-200 dark:border-gray-700 sm:rounded-lg'
