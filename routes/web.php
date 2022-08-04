@@ -11,18 +11,28 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
-Route::get('/', static function () {
+Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware('auth')->group(static function () {
+Route::middleware('auth')->group(function () {
     Route::get('/dashboard', static fn() => view('dashboard'))->name('dashboard');
-    Route::get(
-        '/tasks',
-        static fn() => view('tasks', ['tasks' => Task::paginate()])
-    )->name('tasks');
+    Route::prefix('/tasks')->name('tasks.')->group(static function () {
+        Route::get(
+            '/', static fn() => view('tasks.index', ['tasks' => Task::paginate()])
+        )->name('index');
+
+        Route::get(
+            '/create', static fn() => view('tasks.form')
+        )->name('create');
+
+        Route::get(
+            '/{task}/edit', static fn() => view('tasks.form')
+        )->name('edit');
+
+    });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
