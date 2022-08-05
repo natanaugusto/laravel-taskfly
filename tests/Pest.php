@@ -54,6 +54,5 @@ function createLivewireComponentInstance(string $name): array
     $component->assertHasNoErrors();
     $instance = $component->instance();
     expect(value:$instance)->toBeInstanceOf(class :$name);
-
     return compact(var_name:['component', 'instance']);
 }
