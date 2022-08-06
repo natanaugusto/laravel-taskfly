@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Ramsey\Uuid\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use OpenApi\Annotations as OA;
-use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @OA\Schema(
@@ -41,15 +40,19 @@ class Task extends Model
     const SHORTCODE_LENGTH = 8;
 
     protected $fillable = ['creator_id', 'title', 'due'];
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
 
     public function save(array $options = []): bool
     {
         if (!$this->exists) {
             if (empty($this->shortcode)) {
-                $this->shortcode = self::shortcodefy(string: $this->title);
+                $this->shortcode = self::shortcodefy(string:$this->title);
             }
             if (empty($this->uuid)) {
-                $this->uuid = Uuid::uuid5(ns: self::NAMESPACE_UUID, name: $this->title);
+                $this->uuid = Uuid::uuid5(ns:self::NAMESPACE_UUID, name:$this->title);
             }
         }
         return parent::save($options);
@@ -57,11 +60,11 @@ class Task extends Model
 
     protected static function shortcodefy(string $string): string
     {
-        $string = preg_replace(pattern: '/[^\da-z]/i', replacement: '', subject: $string);
+        $string = preg_replace(pattern:'/[^\da-z]/i', replacement:'', subject:$string);
         $short = $string[0];
-        $strLen = strlen(string: $string);
-        $m = intval(value: ceil(num: $strLen / (self::SHORTCODE_LENGTH / 2)));
-        while (strlen(string: $short) < self::SHORTCODE_LENGTH / 2 - 1) {
+        $strLen = strlen(string:$string);
+        $m = intval(value:ceil(num:$strLen / (self::SHORTCODE_LENGTH / 2)));
+        while (strlen(string:$short) < self::SHORTCODE_LENGTH / 2 - 1) {
             if ($m < $strLen && !empty($string[$m])) {
                 $short .= $string[$m];
                 $m += $m;
@@ -71,23 +74,23 @@ class Task extends Model
             }
         }
         $short .= $string[$strLen - 1];
-        $short = strtoupper(string: $short);
+        $short = strtoupper(string:$short);
         $code = str_pad(
-            string: self::where('shortcode', 'like', "#{$short}-%")->count() + 1,
-            length: 4,
-            pad_string: '0',
-            pad_type: STR_PAD_LEFT
+            string:self::where('shortcode', 'like', "#{$short}-%")->count() + 1,
+            length:4,
+            pad_string:'0',
+            pad_type:STR_PAD_LEFT
         );
         return "#{$short}-{$code}";
     }
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(related: User::class, foreignKey: 'creator_id');
+        return $this->belongsTo(related:User::class, foreignKey:'creator_id');
     }
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(related: User::class, table: 'user_task');
+        return $this->belongsToMany(related:User::class, table:'user_task');
     }
 }
