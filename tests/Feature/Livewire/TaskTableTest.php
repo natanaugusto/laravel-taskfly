@@ -1,5 +1,6 @@
 <?php
 use App\Http\Livewire\TaskTable;
+use App\Models\Task;
 use App\Models\User;
 use function Pest\Laravel\actingAs;
 use Livewire\Testing\TestableLivewire;
@@ -22,24 +23,38 @@ it(description:'test Livewire\TaskTable mount', closure:function () {
     expect(value:$instance->getColumnSelectStatus())->toBeFalse();
 });
 
-it(description:'test Livewire\TaskTable', closure:function () {
+it(description:'test tasks.index', closure:function () {
     /**
      * @var Collection|User
      */
     $user = User::factory()->create();
+    $tasks = Task::factory(count:50)->create();
+
     $response = actingAs($user)->get(route(name:'tasks.index'));
     $response->assertViewIs(value:'tasks.index');
     $response->assertSee(__(key:'Tasks'));
     $response->assertSeeLivewire(component:'task-table');
 
     extract(createLivewireComponentInstance(name:TaskTable::class));
-    $columns = array_map(
+    $columns = getTableColumns($instance, $component);
+    $columnsArr = array_map(
         callback:static fn($column) => $column->getTitle(),
-        array:getTableColumns($instance, $component)
+        array:$columns
     );
-    expect(value:$columns)->toBeArray();
-    foreach ($columns as $column) {
+    foreach ($columnsArr as $column) {
         $response->assertSee(__(key:$column));
+    }
+
+    $columnsArr = array_map(
+        callback:static fn($column) => $column->getFrom(),
+        array:$columns
+    );
+    foreach ($tasks->chunk(size:$instance->getPerPage())[0] as $task) {
+        foreach ($task->toArray() as $attr => $val) {
+            if (in_array(needle:$attr, haystack:$columnsArr)) {
+                $response->assertSee(__(key:$val));
+            }
+        }
     }
 });
 
