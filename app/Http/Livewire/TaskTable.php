@@ -56,4 +56,9 @@ class TaskTable extends DataTableComponent
                 ->collapseOnMobile(),
         ];
     }
+
+    public function delete(Task $task): bool
+    {
+        return $task->delete();
+    }
 }
