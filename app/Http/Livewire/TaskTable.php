@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
+use function PHPUnit\Framework\callback;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 
@@ -51,7 +52,10 @@ class TaskTable extends DataTableComponent
             Column::make(title:__(key:'Updated at'), from:'updated_at')
                 ->sortable()
                 ->collapseOnMobile(),
-            Column::make(title:__(key:'Actions'), from:'id')
+            Column::make(title:__('Action'), from:'id')
+                ->format(callable :static function ($row) {
+                    return view('components.action-buttons', ['row' => $row]);
+                })
                 ->view('components.action-buttons')
                 ->collapseOnMobile(),
         ];
