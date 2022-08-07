@@ -3,17 +3,21 @@ use App\Http\Livewire\TaskTable;
 use App\Models\Task;
 use App\Models\User;
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use Livewire\Testing\TestableLivewire;
 
-it(description:'test Livewire\TaskTable mount', closure:function () {
+it(description:'test mount', closure:function () {
+    /**
+     * @var TestableLivewire $component
+     * @var TaskTable $instance
+     */
     extract(createLivewireComponentInstance(name:TaskTable::class));
-    expect(value:$instance)->toBeInstanceOf(class :TaskTable::class);
     expect(value:$instance->getPrimaryKey())
         ->toBe(expected:TaskTable::PRIMARY_KEY);
 
     $columns = getTableColumns($instance, $component);
-    foreach ($columns as $column)
-    {
+    foreach ($columns as $column) {
         expect(value:$instance->getThAttributes(column:$column))
             ->toBe(expected:TaskTable::TABLE_TH_ATTRS);
     }
@@ -35,6 +39,10 @@ it(description:'test tasks.index', closure:function () {
     $response->assertSee(__(key:'Tasks'));
     $response->assertSeeLivewire(component:'task-table');
 
+    /**
+     * @var TestableLivewire $component
+     * @var TaskTable $instance
+     */
     extract(createLivewireComponentInstance(name:TaskTable::class));
     $columns = getTableColumns($instance, $component);
     $columnsArr = array_map(
@@ -56,6 +64,18 @@ it(description:'test tasks.index', closure:function () {
             }
         }
     }
+});
+
+it(description:'test delete', closure:function () {
+    /**
+     * @var TestableLivewire $component
+     * @var TaskTable $instance
+     */
+    extract(createLivewireComponentInstance(name:TaskTable::class));
+    $task = Task::factory()->createOne();
+    assertDatabaseHas(table:Task::class, data:$task->toArray());
+    $component->call('delete', $task);
+    assertDatabaseMissing(table:Task::class, data:$task->toArray());
 });
 
 function getTableColumns(TaskTable $instance, TestableLivewire $component): array
