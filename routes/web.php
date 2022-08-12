@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
         )->name('create');
 
         Route::get(
-            '/{task}/edit', static fn() => view('tasks.form')
+            '/{task}/edit', static fn(Task $task) => view('tasks.form', ['task' => $task])
         )->name('edit');
 
     });

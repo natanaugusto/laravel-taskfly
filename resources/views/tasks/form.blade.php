@@ -12,12 +12,12 @@
                     <form class="m-auto block max-w-md">
                         <label class="m-2 block p-2">
                             <span class="text-gray-700">{{ __('Title') }}</span>
-                            <input type="text"
+                            <input type="text" value="{{ empty($task) ? '' : $task?->title }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                         </label>
                         <label class="m-2 block p-2">
                             <span class="text-gray-700">{{ __('Due') }}</span>
-                            <input type="datetime-local"
+                            <input type="datetime-local" value="{{ empty($task) ? '' : $task?->due }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                         </label>
                         <div class="m-2 block p-2">
