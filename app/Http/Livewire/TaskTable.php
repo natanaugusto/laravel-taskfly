@@ -8,14 +8,17 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 
 class TaskTable extends DataTableComponent
 {
-    const PRIMARY_KEY = 'id';
-    const TABLE_TH_ATTRS = [
+    public const PRIMARY_KEY = 'id';
+    public const TABLE_TH_ATTRS = [
         'default' => false,
         'class' => 'p-3 text-left text-xs font-medium whitespace-nowrap text-gray-500 uppercase tracking-wider dark:bg-gray-800 dark:text-gray-400',
     ];
-    const TABLE_WRAPPER_ATTRS = [
+    public const TABLE_WRAPPER_ATTRS = [
         'default' => false,
         'class' => 'shadow border-b border-gray-200 dark:border-gray-700 sm:rounded-lg',
+    ];
+    public const CONFIGURABLE_AREAS_VIEWS = [
+        'toolbar-left-start' => 'tasks.create-button',
     ];
 
     protected $model = Task::class;
@@ -23,8 +26,9 @@ class TaskTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey(key:self::PRIMARY_KEY);
-        $this->setThAttributes(callback:static fn() => self::TABLE_TH_ATTRS);
+        $this->setThAttributes(callback:static fn () => self::TABLE_TH_ATTRS);
         $this->setTableWrapperAttributes(attributes:self::TABLE_WRAPPER_ATTRS);
+        $this->setConfigurableAreas(areas:self::CONFIGURABLE_AREAS_VIEWS);
         $this->setSearchDisabled();
         $this->setColumnSelectDisabled();
     }
