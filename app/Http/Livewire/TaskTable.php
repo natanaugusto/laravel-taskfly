@@ -17,6 +17,9 @@ class TaskTable extends DataTableComponent
         'default' => false,
         'class' => 'shadow border-b border-gray-200 dark:border-gray-700 sm:rounded-lg',
     ];
+    public const CONFIGURABLE_AREAS_VIEWS = [
+        'toolbar-left-start' => 'tasks.create-button',
+    ];
 
     protected $model = Task::class;
 
@@ -25,6 +28,7 @@ class TaskTable extends DataTableComponent
         $this->setPrimaryKey(key:self::PRIMARY_KEY);
         $this->setThAttributes(callback:static fn () => self::TABLE_TH_ATTRS);
         $this->setTableWrapperAttributes(attributes:self::TABLE_WRAPPER_ATTRS);
+        $this->setConfigurableAreas(areas:self::CONFIGURABLE_AREAS_VIEWS);
         $this->setSearchDisabled();
         $this->setColumnSelectDisabled();
     }
