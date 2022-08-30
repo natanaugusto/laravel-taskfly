@@ -1,57 +1,60 @@
 # Laravel Taskfly
 
-This project intends to provide a taskfly system where the tasks can be treated like anything.
+This is just a Laravel playground.
 
-## Installing this project
-First of all, clone this repository.
+## Running locally
 
-```bash
-git clone https://github.com/natanaugusto/laravel-taskfly
-```
+This project uses [Laravel Sail](https://laravel.com/docs/9.x/sail) which is a good and easy tool to deploy Laravel applications for development purposes.
 
-This project uses [Laravel Sail](https://laravel.com/docs/9.x/sail) so the Docker Development Environment was provided by that.
+I create an [alpine/Dockerfile](docker/alpine/Dockerfile). The default docker image is an Ubuntu. But, I like the [Alpine](image) a little more when we talk about docker image containers.
 
-(I assumed you have docker already installed on your S.O)
+### To consider
 
-### Copy and configure DotEnv file
-```bash
-cp .env.example .env
-sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=pgsql/g' .env
-sed -i 's/DB_HOST=127.0.0.1/DB_HOST=pgsql/g' .env
-sed -i 's/DB_PORT=3306/DB_PORT=5432/g' .env
-sed -i 's/DB_USERNAME=root/DB_USERNAME=sail/g' .env
-sed -i 's/DB_PASSWORD=/DB_PASSWORD=password/g' .env
-sed -i 's/MEMCACHED_HOST=127.0.0.1/MEMCACHED_HOST=memcached/g' .env
-sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=memcached/g' .env
-```
+We'll need to clone the [repository](https://github.com/natanaugusto/laravel-taskfly) and after that, We'll run docker-compose and the other commands to run this project locally.
 
-### Download and up the docker containers
-```shell
-docker-compose up -d
-sudo chown $USER:$USER -R vendor
-docker-compose exec -u sail laravel.test composer install --verbose
-docker-compose down
-```
-### Using Sail
-[Added the sail alias](https://laravel.com/docs/9.x/sail#configuring-a-shell-alias)
+(Certify if you have [docker](https://docs.docker.com/engine/install) and [docker-compose](https://docs.docker.com/compose/install/) correctly installed)
+
+### Let's start
+The fellow commands will clone, start and deploy a development instance for this project.
 
 ```shell
-sail build
-sail up -d
-sail artisan key:generate
-sail artisan migrate
-sail npm install --verbose
-sail npm run build
-```
+$ git clone https://github.com/natanaugusto/laravel-taskfly
+$ cd laravel-taskfly
 
-### Test if works
-First, lets try if the `tests` runs green.
+$ cp .env.example .env
+$ sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mariadb/g' .env
+$ sed -i 's/DB_USERNAME=root/DB_USERNAME=sail/g' .env
+$ sed -i 's/DB_PASSWORD=/DB_PASSWORD=password/g' .env
+
+$ docker-compose up -d
+# If you get an error here, just try again one more time to be sure
+$ sudo chown $USER:$USER -R vendor
+$ docker-compose exec -u sail laravel.test composer install --verbose
+$ docker-compose down
+
+$ sail build
+$ sail up -d
+$ sail artisan key:generate
+$ sail artisan migrate
+$ sail npm install --verbose
+$ sail npm run build
+```
+### Creating dummy data
+We'll use [Laravel Tinker](https://laravel.com/docs/9.x/artisan#tinker) to create fake data. This will create 200 tasks on the database.
+
 ```shell
-sail test
-```
-All green?
+$ sail tinker
 
-So, let's access the [localhost](http://localhost) to check if is working.
+Psy Shell v0.11.8 (PHP 8.1.9 — cli) by Justin Hileman
+>>> Task::factory(200)->create()
+```
+### If all goes right
+
+Our local instance is up and filled with dummy data.
+
+- [Register a user](http://localhost/register)
+- [Login](http://localhost/register)
+
 ## Maybe Stack
 - Laravel
   - Socialite
