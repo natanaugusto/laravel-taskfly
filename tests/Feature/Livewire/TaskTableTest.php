@@ -7,7 +7,7 @@ use Livewire\Testing\TestableLivewire;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertDatabaseMissing;
+use function Pest\Laravel\assertSoftDeleted;
 
 it(description:'test mount', closure:function () {
     /**
@@ -77,7 +77,7 @@ it(description:'test delete', closure:function () {
     $task = Task::factory()->createOne();
     assertDatabaseHas(table:Task::class, data:$task->toArray());
     $component->call('delete', $task);
-    assertDatabaseMissing(table:Task::class, data:$task->toArray());
+    assertSoftDeleted(table:Task::class, data:$task->toArray());
 });
 
 function getTableColumns(TaskTable $instance, TestableLivewire $component): array
