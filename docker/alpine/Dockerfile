@@ -8,6 +8,7 @@ WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
+ENV XDEBUG_MODE=off
 
 RUN echo "@community http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
@@ -47,6 +48,9 @@ RUN apk add --no-cache --update \
     php81-pecl-igbinary \
     && ln -s /usr/bin/php81 /usr/bin/php \
     && php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+RUN sed -i 's/;zend_extension=xdebug.so/zend_extension=xdebug.so/g' /etc/php81/conf.d/50_xdebug.ini \
+    && sed -i 's/;xdebug.mode=off/xdebug.mode=${XDEBUG_MODE}/g' /etc/php81/conf.d/50_xdebug.ini
+
 RUN apk add --no-cache --update nodejs npm
 RUN apk add --no-cache --update mycli pgcli
 
