@@ -1,11 +1,14 @@
 <?php
+
 use App\Http\Livewire\TaskTable;
 use App\Models\Task;
 use App\Models\User;
+use Livewire\Testing\TestableLivewire;
+
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertDatabaseMissing;
-use Livewire\Testing\TestableLivewire;
+
+use function Pest\Laravel\assertSoftDeleted;
 
 it(description:'test mount', closure:function () {
     /**
@@ -46,7 +49,7 @@ it(description:'test tasks.index', closure:function () {
     extract(createLivewireComponentInstance(name:TaskTable::class));
     $columns = getTableColumns($instance, $component);
     $columnsArr = array_map(
-        callback:static fn($column) => $column->getTitle(),
+        callback:static fn ($column) => $column->getTitle(),
         array:$columns
     );
     foreach ($columnsArr as $column) {
@@ -54,7 +57,7 @@ it(description:'test tasks.index', closure:function () {
     }
 
     $columnsArr = array_map(
-        callback:static fn($column) => $column->getFrom(),
+        callback:static fn ($column) => $column->getFrom(),
         array:$columns
     );
     foreach ($tasks->chunk(size:$instance->getPerPage())[0] as $task) {
@@ -75,7 +78,7 @@ it(description:'test delete', closure:function () {
     $task = Task::factory()->createOne();
     assertDatabaseHas(table:Task::class, data:$task->toArray());
     $component->call('delete', $task);
-    assertDatabaseMissing(table:Task::class, data:$task->toArray());
+    assertSoftDeleted(table:Task::class, data:$task->toArray());
 });
 
 function getTableColumns(TaskTable $instance, TestableLivewire $component): array

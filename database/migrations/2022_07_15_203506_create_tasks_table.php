@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -23,11 +22,15 @@ return new class extends Migration
             $table->string(column: 'shortcode', length: 10)->unique();
             $table->string(column: 'title');
             $table->dateTime(column: 'due')->default(DB::raw(value: 'CURRENT_TIMESTAMP'));
-            $table->enum(column: 'status', allowed: array_map(
-                callback: static fn($enum) => $enum->value,
-                array: Status::cases())
+            $table->enum(
+                column: 'status',
+                allowed: array_map(
+                callback: static fn ($enum) => $enum->value,
+                array: Status::cases()
+            )
             )->default(Status::DEFAULT->value);
             $table->timestamps();
+            $table->softDeletes();
             $table->index(columns: ['uuid', 'shortcode', 'creator_id', 'title', 'due', 'status']);
         });
     }
