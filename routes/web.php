@@ -13,14 +13,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
  */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware('auth')->group(callback:function () {
-    Route::get(uri:'/tasks', action:static fn () => view('tasks'))->name('tasks');
+    Route::get(uri:'/', action:static fn () => redirect(to:route(name:'dashboard')));
     Route::get(uri:'/dashboard', action:static fn () => view('dashboard'))->name('dashboard');
+
+    Route::get(uri:'/tasks', action:static fn () => view('tasks'))->name('tasks');
 });
 
 require __DIR__ . '/auth.php';
