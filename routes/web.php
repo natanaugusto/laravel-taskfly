@@ -18,24 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', static fn () => view('dashboard'))->name('dashboard');
-    Route::prefix('/tasks')->name('tasks.')->group(static function () {
-        Route::get(
-            '/',
-            static fn () => view('tasks.index', ['tasks' => Task::paginate()])
-        )->name('index');
-
-        Route::get(
-            '/create',
-            static fn () => view('tasks.form')
-        )->name('create');
-
-        Route::get(
-            '/{task}/edit',
-            static fn (Task $task) => view('tasks.form', ['task' => $task])
-        )->name('edit');
-    });
+Route::middleware('auth')->group(callback:function () {
+    Route::get(uri:'/tasks', action:static fn () => view('tasks'))->name('tasks');
+    Route::get(uri:'/dashboard', action:static fn () => view('dashboard'))->name('dashboard');
 });
 
 require __DIR__ . '/auth.php';
