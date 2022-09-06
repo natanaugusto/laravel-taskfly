@@ -38,6 +38,7 @@ $ sail artisan key:generate
 $ sail artisan migrate
 $ sail npm install --verbose
 $ sail npm run build
+$ sail test
 ```
 ### Creating dummy data
 We'll use [Laravel Tinker](https://laravel.com/docs/9.x/artisan#tinker) to create fake data. This will create 200 tasks on the database.
