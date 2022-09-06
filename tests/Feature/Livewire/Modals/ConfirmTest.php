@@ -1,18 +1,31 @@
 <?php
 
-use App\Models\Task;
-use App\Http\Livewire\TaskTable;
 use App\Http\Livewire\Modals\Confirm;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Testing\TestableLivewire;
 
 use function Pest\Faker\faker;
-use function Pest\Laravel\assertSoftDeleted;
+
+const ITEM_ID = 1;
+
+$item = new class () extends Model {
+    protected $table = 'table';
+    public int $id = ITEM_ID;
+};
+
+class Component
+{
+    public function action(Model $item): bool
+    {
+        return $item->id = ITEM_ID;
+    }
+}
 
 beforeEach(function () {
     $this->attrs = [
         'title' => faker()->title,
         'description' => faker()->text(),
-        'confirmBtnLabel' => 'Delete',
+        'confirmBtnLabel' => 'Button',
     ];
     /**
      * @var TestableLivewire $component
@@ -36,15 +49,13 @@ it(description:'mount', closure:function () {
     }
 });
 
-it(description:'call confirm - TaskTable::delete', closure:function () {
-    $Task = Task::factory()->createOne();
+it(description:'modal confirmation', closure:function () use ($item) {
     $this->component->set('confirmAction', [
-        TaskTable::class,
-        'delete',
-        $Task,
-        'refreshDatatable'
+        Component::class,
+        'action',
+        $item,
+        null
     ]);
-    $this->component->call('confirm');
-    $this->component->assertEmitted('refreshDatatable');
-    assertSoftDeleted(table:Task::class, data:['id' => $Task->id]);
+    $this->component->call('confirm')
+        ->assertHasNoErrors();
 });
