@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Livewire\Modals\Confirm;
 use App\Models\User;
 use App\Models\Task;
 use App\Http\Livewire\TaskTable;
 use Livewire\Testing\TestableLivewire;
 
+use function Pest\Faker\faker;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
@@ -63,12 +65,39 @@ it(description:'test tasks page', closure:function () {
     }
 });
 
-it(description:'test delete', closure:function () {
+it(description:'TaskTable::delete', closure:function () {
     $task = Task::factory()->createOne();
     assertDatabaseHas(table:Task::class, data:$task->toArray());
     $this->component->call('delete', $task);
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
+
+it(description:'modal confirmation TaskTable::delete', closure:function () {
+    /**
+     * @var TestableLivewire $component
+     * @var Confirm $instance
+     */
+    extract(array:createLivewireComponentInstance(
+        name:Confirm::class,
+        params:[
+            'title' => faker()->title,
+            'description' => faker()->text(),
+            'confirmBtnLabel' => 'Delete',
+        ]
+    ));
+
+    $task = Task::factory()->createOne();
+    $component->set('confirmAction', [
+        TaskTable::class,
+        'delete',
+        $task,
+        'refreshDatatable',
+    ]);
+    $component->call('confirm');
+    $component->assertEmitted('refreshDatatable');
+    assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
+});
+
 
 function getTableColumns(TaskTable $instance, TestableLivewire $component): array
 {
