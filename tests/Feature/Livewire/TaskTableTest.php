@@ -22,7 +22,7 @@ beforeEach(function () {
 it(description:'test mount', closure:function () {
     expect(value:$this->instance->getPrimaryKey())
         ->toBe(expected:TaskTable::PRIMARY_KEY);
-
+    expect(value:$this->instance->getTableAttributes()['class'])->toContain(needles:TaskTable::TABLE_ATTRS['class']);
     expect(value:$this->instance->getTableWrapperAttributes())
         ->toBe(expected:TaskTable::TABLE_WRAPPER_ATTRS);
     expect(value:$this->instance->getSearchStatus())->toBeTrue();
