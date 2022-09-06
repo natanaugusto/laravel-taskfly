@@ -10,9 +10,16 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 class TaskTable extends DataTableComponent
 {
     public const PRIMARY_KEY = 'id';
+    public const TABLE_ATTRS = [
+        'class' => 'max-w-full'
+    ];
     public const TABLE_TH_ATTRS = [
         'default' => false,
-        'class' => 'p-3 text-left text-xs font-medium whitespace-nowrap text-gray-500 uppercase tracking-wider dark:bg-gray-800 dark:text-gray-400',
+        'class' => 'place-content-center p-2 text-left text-xs font-medium whitespace-nowrap text-gray-500 uppercase tracking-wider dark:bg-gray-800 dark:text-gray-400',
+    ];
+    public const TABLE_TD_ATTRS = [
+        'default' => false,
+        'class' => 'p-2 whitespace-nowrap text-sm font-medium dark:text-white',
     ];
     public const TABLE_WRAPPER_ATTRS = [
         'default' => false,
@@ -58,7 +65,9 @@ class TaskTable extends DataTableComponent
         $areas = self::CONFIGURABLE_AREAS_VIEWS;
         $areas['toolbar-left-start'][1]['editButtonParams'] = $this->editButtonParams;
         $this->setPrimaryKey(key:self::PRIMARY_KEY);
+        $this->setTableAttributes(self::TABLE_ATTRS);
         $this->setThAttributes(callback:static fn () => self::TABLE_TH_ATTRS);
+        $this->setTdAttributes(callback:static fn () => self::TABLE_TD_ATTRS);
         $this->setTableWrapperAttributes(attributes:self::TABLE_WRAPPER_ATTRS);
         $this->setConfigurableAreas($areas);
         $this->setColumnSelectDisabled();
