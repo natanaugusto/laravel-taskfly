@@ -18,6 +18,7 @@
         "pestphp/pest": "^1.16",
         "pestphp/pest-plugin-laravel": "^1.1",
         "rappasoft/laravel-livewire-tables": "^2.8",
+        "wire-elements/modal": "^1.0",
         "wireui/heroicons": "^1.0"
     },
     "require-dev": {
