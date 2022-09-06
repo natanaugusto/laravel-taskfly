@@ -67,7 +67,7 @@ it(description:'test delete', closure:function () {
     $task = Task::factory()->createOne();
     assertDatabaseHas(table:Task::class, data:$task->toArray());
     $this->component->call('delete', $task);
-    assertSoftDeleted(table:Task::class, data:$task->toArray());
+    assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
 
 function getTableColumns(TaskTable $instance, TestableLivewire $component): array
