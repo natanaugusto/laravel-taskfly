@@ -16,7 +16,7 @@ RUN echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/re
 RUN apk update --no-cache
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apk add --no-cache --update shadow libcap readline curl bash supervisor
+RUN apk add --no-cache --update shadow libcap readline curl bash supervisor sqlite
 RUN apk add --no-cache --update \
     php81 \
     php81-dev \
@@ -41,7 +41,8 @@ RUN apk add --no-cache --update \
     php81-fileinfo@community \
     php81-xmlwriter@community \
     php81-pdo_mysql \
-    php81-pecl-pcov@testing\
+    php81-pdo_sqlite \
+    php81-pecl-pcov@testing \
     php81-pecl-swoole \
     php81-pecl-memcached \
     php81-pecl-msgpack \
