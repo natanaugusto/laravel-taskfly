@@ -2,8 +2,6 @@
     @include($inputsView)
     @include('livewire.modals.action-buttons', compact(
         'confirmBtnLabel',
-        'confirmBtnLabel',
-        'cancelBtnColor',
         'cancelBtnColor'
         ))
 </form>
