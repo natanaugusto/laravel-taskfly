@@ -7,6 +7,8 @@ use Illuminate\Contracts\View\View;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 
+use function Pest\Laravel\instance;
+
 class TaskTable extends DataTableComponent
 {
     public const PRIMARY_KEY = 'id';
@@ -29,7 +31,7 @@ class TaskTable extends DataTableComponent
         'toolbar-left-start' => ['components.create-button', null],
     ];
 
-    protected $model = Task::class;
+    public $model = Task::class;
     public $editButtonParams = [
         'model' => Task::class,
         'inputsView' => 'tasks.inputs',
@@ -110,7 +112,12 @@ class TaskTable extends DataTableComponent
 
     public function save(Task $task): bool
     {
-        return $task->save();
+        if ((bool)count($task->toArray()) === true) {
+            return $task->save();
+        } elseif (is_object($this->model) && instance(abstract:Task::class, instance:$this->model)) {
+            return $this->model->save();
+        }
+        return false;
     }
 
     public function delete(Task $task): bool
