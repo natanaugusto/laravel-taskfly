@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
 
-test(description:'Task Model/Factory CRUD', closure:function () {
+it(description:'has CRUD', closure:function () {
     $task = Task::factory()->create();
     assertDatabaseHas(table:Task::class, data:$task->toArray());
 
@@ -20,7 +20,7 @@ test(description:'Task Model/Factory CRUD', closure:function () {
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
 
-test(description:'Task mass assignments', closure:function () {
+it(description:'can mass assignment', closure:function () {
     $task = Task::create(Arr::only(
         array:Task::factory()->makeOne()->toArray(),
         keys:['creator_id', 'title']
@@ -37,7 +37,7 @@ test(description:'Task mass assignments', closure:function () {
     expect(value:$task->status)->toBe(expected:'todo');
 });
 
-test(description:'Creator relationship', closure:function () {
+it(description:'has creator relationship', closure:function () {
     $task = Task::factory()->create();
     expect(value:$task->creator)->toBeInstanceOf(User::class);
 
