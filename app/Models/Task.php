@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,6 +36,7 @@ use Ramsey\Uuid\Uuid;
 class Task extends Model
 {
     use HasFactory;
+    use HasEvents;
     use SoftDeletes;
 
     public const DUE_DATETIME_FORMAT = 'Y-m-d H:i:s';
