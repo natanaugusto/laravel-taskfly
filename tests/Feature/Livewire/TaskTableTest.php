@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Livewire\Modals\Confirm;
 use App\Models\User;
 use App\Models\Task;
 use App\Http\Livewire\TaskTable;
+use App\Http\Livewire\Modals\Form;
+use App\Http\Livewire\Modals\Confirm;
+use Carbon\Carbon;
 use Livewire\Testing\TestableLivewire;
 
 use function Pest\Faker\faker;
@@ -71,6 +73,46 @@ it(description:'saves(Create)', closure:function () {
     $this->component->assertSet('model', $task);
     $this->component->call('save', $task);
     assertDatabaseHas(table:Task::class, data:$task->toArray());
+});
+
+it(description:'saves(Create) with modal form', closure:function () {
+    /**
+     * @var User $user
+     */
+    $user = User::factory()->createOne();
+    actingAs($user);
+    /**
+     * @var TestableLivewire $component
+     * @var Form $instance
+     */
+    extract(array:createLivewireComponentInstance(
+        name:Form::class,
+        params:[
+            'title' => faker()->title,
+            'inputsView' => 'tasks.inputs',
+            'inputRules' => [
+                'model.title' => 'required|string',
+                'model.due' => 'required|date_format:' . Task::DUE_DATETIME_FORMAT,
+            ],
+            'description' => faker()->text(),
+            'confirmBtnLabel' => 'Create',
+        ]
+    ));
+    $component->set('confirmAction', [
+        TaskTable::class,
+        'save',
+        Task::class,
+        'refreshDatatable',
+    ]);
+    $model = [
+        'title' => faker()->title,
+        'due' => Carbon::now()->addMinute(10)->format(Task::DUE_DATETIME_FORMAT),
+    ];
+    $component->syncInput(name:'model.title', value:$model['title']);
+    $component->syncInput(name:'model.due', value:$model['due']);
+    $component->call('confirm');
+    $component->assertEmitted('refreshDatatable');
+    assertDatabaseHas(table:Task::class, data:$model);
 });
 
 it(description:'delete', closure:function () {

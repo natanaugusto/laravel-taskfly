@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Modals;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Livewire\Exceptions\MissingRulesException;
 use Livewire\Exceptions\CannotBindToModelDataWithoutValidationRuleException;
 
 class Form extends Modal
@@ -35,6 +36,10 @@ class Form extends Modal
                 }
                 break;
             case 'string':
+                if (class_exists(class:$model)) {
+                    $model = $this->parseDefaultModel($model);
+                    break;
+                }
             case 'integer':
                 if (!is_numeric(value:$model)) {
                     throw new CannotBindToModelDataWithoutValidationRuleException(key:$model, component:$this);
@@ -46,12 +51,31 @@ class Form extends Modal
                 $model->fill(Arr::only(array:$this->model, keys:$model->getFillable()));
                 break;
             default:
-                $model = $this->model;
-                if (is_null($model->creator_id)) {
-                    $model->creator_id = auth()->user()->id;
-                }
+                $model = $this->parseDefaultModel();
                 break;
         }
         return $model;
+    }
+
+    protected function parseDefaultModel(string $model = null): Model
+    {
+        switch (gettype($this->model)) {
+            case 'array':
+                if (class_exists(class :$model)) {
+                    $model = new $model($this->model);
+                } else {
+                    throw new MissingRulesException(component:$this);
+                }
+                break;
+            case 'object':
+            default:
+                $model = $this->model;
+                break;
+        }
+        if (is_null($model->creator_id)) {
+            $model->creator_id = auth()->user()->id;
+        }
+        return $model;
+
     }
 }
