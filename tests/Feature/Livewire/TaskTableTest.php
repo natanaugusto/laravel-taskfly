@@ -21,7 +21,7 @@ beforeEach(function () {
     $this->instance = $instance;
 });
 
-it(description:'test mount', closure:function () {
+it(description:'mounts', closure:function () {
     expect(value:$this->instance->getPrimaryKey())
         ->toBe(expected:TaskTable::PRIMARY_KEY);
     expect(value:$this->instance->getTableAttributes()['class'])->toContain(needles:TaskTable::TABLE_ATTRS['class']);
@@ -31,7 +31,7 @@ it(description:'test mount', closure:function () {
     expect(value:$this->instance->getColumnSelectStatus())->toBeFalse();
 });
 
-it(description:'test tasks page', closure:function () {
+it(description:'has a loadable page', closure:function () {
     /**
      * @var Collection|User
      */
@@ -65,14 +65,22 @@ it(description:'test tasks page', closure:function () {
     }
 });
 
-it(description:'TaskTable::delete', closure:function () {
+it(description:'saves(Create)', closure:function () {
+    $task = Task::factory()->makeOne();
+    $this->component->set('model', $task);
+    $this->component->assertSet('model', $task);
+    $this->component->call('save', $task);
+    assertDatabaseHas(table:Task::class, data:$task->toArray());
+});
+
+it(description:'delete', closure:function () {
     $task = Task::factory()->createOne();
     assertDatabaseHas(table:Task::class, data:$task->toArray());
     $this->component->call('delete', $task);
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
 
-it(description:'modal confirmation TaskTable::delete', closure:function () {
+it(description:'delete with modal confirmation', closure:function () {
     /**
      * @var TestableLivewire $component
      * @var Confirm $instance
