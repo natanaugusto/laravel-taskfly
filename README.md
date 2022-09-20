@@ -33,6 +33,12 @@ $ sudo chown $USER:$USER -R vendor
 $ docker-compose exec -u sail laravel.test composer install --verbose
 $ docker-compose down
 
+# If you don't have the sail alias, please added using the instructions below
+# https://laravel.com/docs/9.x/sail#configuring-a-shell-alias
+# Use ~/.zshrc or ~/.bashrc. What's works for you
+$ echo "alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'" >> ~/.zshrc
+$ source ~/.zshrc
+
 $ sail build
 $ sail up -d
 $ sail artisan key:generate
