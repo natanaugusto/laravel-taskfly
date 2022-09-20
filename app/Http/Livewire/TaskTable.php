@@ -39,7 +39,7 @@ class TaskTable extends DataTableComponent
             'model.title' => 'required|string',
             'model.due' => 'required|date_format:' . Task::DUE_DATETIME_FORMAT,
         ],
-        'title' => 'Are you sure?',
+        'title' => 'Just edit that',
         'confirmBtnLabel' => 'Update',
         'confirmBtnColor' => 'green',
         'confirmAction' => [
@@ -48,6 +48,10 @@ class TaskTable extends DataTableComponent
             null,
             'refreshDatatable'
         ],
+    ];
+    public $createButtonParams = [
+        'title' => 'Create a new one',
+        'confirmBtnLabel' => 'Create',
     ];
     public $deleteButtonParams = [
         'title' => 'Are you sure?',
@@ -65,7 +69,10 @@ class TaskTable extends DataTableComponent
     public function configure(): void
     {
         $areas = self::CONFIGURABLE_AREAS_VIEWS;
-        $areas['toolbar-left-start'][1]['editButtonParams'] = $this->editButtonParams;
+        $areas['toolbar-left-start'][1]['createButtonParams'] = array_merge(
+            $this->editButtonParams,
+            $this->createButtonParams
+        );
         $this->setPrimaryKey(key:self::PRIMARY_KEY);
         $this->setTableAttributes(self::TABLE_ATTRS);
         $this->setThAttributes(callback:static fn () => self::TABLE_TH_ATTRS);
