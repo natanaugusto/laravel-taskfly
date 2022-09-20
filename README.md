@@ -23,6 +23,7 @@ $ cd laravel-taskfly
 
 $ cp .env.example .env
 $ sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mariadb/g' .env
+$ sed -i 's/DB_DATABASE=laravel/DB_DATABASE=taskfly/g' .env
 $ sed -i 's/DB_USERNAME=root/DB_USERNAME=sail/g' .env
 $ sed -i 's/DB_PASSWORD=/DB_PASSWORD=password/g' .env
 
