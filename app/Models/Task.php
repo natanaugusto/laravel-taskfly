@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasEvents;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OpenApi\Annotations as OA;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 use Ramsey\Uuid\Uuid;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
@@ -36,18 +36,20 @@ use Ramsey\Uuid\Uuid;
 class Task extends Model
 {
     use HasFactory;
-    use HasEvents;
     use SoftDeletes;
 
+    public const SHORTCODE_LENGTH = 8;
     public const DUE_DATETIME_FORMAT = 'Y-m-d H:i:s';
     public const NAMESPACE_UUID = 'c8bc2dc4-0495-11ed-b939-0242ac120002';
-    public const SHORTCODE_LENGTH = 8;
 
-    protected $fillable = ['creator_id', 'title', 'due'];
+    protected $dispatchesEvents = [
+        'saved' => \App\Events\TaskSaved::class,
+    ];
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+    protected $fillable = ['creator_id', 'title', 'due'];
 
     public function save(array $options = []): bool
     {
