@@ -19,7 +19,7 @@ class TaskSaved
      *
      * @return void
      */
-    public function __construct(protected Task $task)
+    public function __construct(public Task $task)
     {
     }
 }
