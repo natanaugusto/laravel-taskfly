@@ -2,10 +2,14 @@
 
 use App\Events\TaskSaved;
 use App\Listeners\TaskListener;
+use App\Mail\TaskChanged;
 use App\Models\User;
 use App\Models\Task;
+use Illuminate\Events\CallQueuedListener;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
@@ -29,6 +33,23 @@ it(description:'dispatch an event after save', closure:function () {
     $task->save();
     Event::assertDispatched(event:TaskSaved::class);
     Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
+});
+
+it(description:'enqueue a task listener when a task is saved', closure:function () {
+    Queue::fake();
+    $task = Task::factory()->makeOne();
+    $task->save();
+    Queue::assertPushed(
+        job:CallQueuedListener::class,
+        callback:fn ($job) => $job->class === TaskListener::class
+    );
+});
+
+it(description:'send an mail when a task is saved', closure:function () {
+    Mail::fake();
+    $task = Task::factory()->makeOne();
+    $task->save();
+    Mail::assertQueued(mailable:TaskChanged::class);
 });
 
 it(description:'can mass assignment', closure:function () {
