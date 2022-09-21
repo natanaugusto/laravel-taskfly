@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\TaskSaved;
+use App\Listeners\TaskListener;
 use App\Models\User;
 use App\Models\Task;
 use Illuminate\Support\Arr;
@@ -27,6 +28,7 @@ it(description:'dispatch an event after save', closure:function () {
     $task = Task::factory()->makeOne();
     $task->save();
     Event::assertDispatched(event:TaskSaved::class);
+    Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
 });
 
 it(description:'can mass assignment', closure:function () {
