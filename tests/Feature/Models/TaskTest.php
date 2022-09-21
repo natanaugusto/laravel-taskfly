@@ -1,8 +1,10 @@
 <?php
 
+use App\Events\TaskSaved;
 use App\Models\User;
 use App\Models\Task;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
@@ -18,6 +20,13 @@ it(description:'has CRUD', closure:function () {
 
     $task->delete();
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
+});
+
+it(description:'dispatch an event after save', closure:function () {
+    Event::fake();
+    $task = Task::factory()->makeOne();
+    $task->save();
+    Event::assertDispatched(event:TaskSaved::class);
 });
 
 it(description:'can mass assignment', closure:function () {
