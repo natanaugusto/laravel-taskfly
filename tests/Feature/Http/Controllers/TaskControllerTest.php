@@ -27,7 +27,8 @@ it(description:'has a GET@/api/task to list all tasks', closure:function () {
     );
     $response->assertStatus(status:SymfonyResponse::HTTP_NOT_FOUND);
 
-    $tasks = Task::factory()->count(10)->create();
+    Task::factory()->count(10)->create();
+    $tasks = Task::factory()->count(5)->create(['creator_id' => $user->id]);
     $response = json(method:SymfonyRequest::METHOD_GET, uri:route(name:'task.all'));
     $response->assertStatus(status:SymfonyResponse::HTTP_OK);
     // ->assertJsonFragment(data:['data' => $tasks->toArray()]);
@@ -101,7 +102,7 @@ it(description:'has a DELETE@/api/task to delete a task', closure:function () {
      */
     $user = User::factory()->create();
     actingAs($user);
-    $task = Task::factory()->create();
+    $task = Task::factory()->create(['creator_id' => $user->id]);
     $response = json(
         method:SymfonyRequest::METHOD_DELETE,
         uri:route(name:'task.delete', parameters:['task' => $task])

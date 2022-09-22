@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Criteria\IamCreatorCriteriaCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\TaskRepository;
@@ -25,7 +26,7 @@ class TaskRepositoryEloquent extends BaseRepository implements TaskRepository
         return Task::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -33,6 +34,7 @@ class TaskRepositoryEloquent extends BaseRepository implements TaskRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        $this->pushCriteria(app(IamCreatorCriteriaCriteria::class));
     }
-    
+
 }
