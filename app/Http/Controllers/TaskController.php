@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entities\Task;
 use App\Models\User;
+use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
@@ -11,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class TaskController extends Controller
 {
+    public function __construct(protected TaskRepository $repository)
+    {
+    }
     /**
      * @OA\Get(
      *     path="/api/task",
@@ -31,10 +35,10 @@ class TaskController extends Controller
      */
     public function all(): JsonResponse
     {
-        $tasks = Task::paginate();
+        $tasks = $this->repository->paginate();
         return $tasks->count() > 0
-            ? response()->json(data: $tasks)
-            : response()->json(status: SymfonyResponse::HTTP_NO_CONTENT);
+            ? response()->json(data:$tasks)
+            : response()->json(status:SymfonyResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -66,7 +70,7 @@ class TaskController extends Controller
      */
     public function view(Task $task): JsonResponse
     {
-        return response()->json($task);
+        return response()->json($this->repository->find(id:$task->id));
     }
 
     /**
@@ -89,16 +93,16 @@ class TaskController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $request->validate(rules: [
+        $request->validate(rules:[
             'title' => 'required',
             'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT],
             'users.*' => ['exists:users,id'],
         ]);
-        if ($request->has(key: 'users')) {
-            $users = $request->input(key: 'users');
+        if ($request->has(key:'users')) {
+            $users = $request->input(key:'users');
         }
-        $task = Task::create(array_merge(
-            $request->except(keys: ['users']),
+        $task = $this->repository->create(array_merge(
+            $request->except(keys:['users']),
             ['creator_id' => $request->user()->id]
         ));
         if (!empty($users)) {
@@ -106,7 +110,7 @@ class TaskController extends Controller
             $task->users()->saveMany($users);
         }
 
-        return response()->json(data: $task, status: SymfonyResponse::HTTP_CREATED);
+        return response()->json(data:$task, status:SymfonyResponse::HTTP_CREATED);
     }
 
     /**
@@ -142,12 +146,13 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task): JsonResponse
     {
-        $task->fill(attributes: $request->all());
+        $task->fill(attributes:$request->all());
         if ($task->isClean()) {
-            return response()->json(status: SymfonyResponse::HTTP_NOT_MODIFIED);
+            return response()->json(status:SymfonyResponse::HTTP_NOT_MODIFIED);
         }
-        $task->save();
-        return response()->json(data: $task, status: SymfonyResponse::HTTP_ACCEPTED);
+        $this->repository->update(attributes:$task->toArray(), id:$task->id);
+        $task->refresh();
+        return response()->json(data:$task, status:SymfonyResponse::HTTP_ACCEPTED);
     }
 
     /**
@@ -182,11 +187,11 @@ class TaskController extends Controller
         $request->validate(rules: [
             'users.*' => ['required', 'exists:users,id'],
         ]);
-        $users = $request->input(key: 'users');
+        $users = $request->input(key:'users');
         $users = User::findMany($users);
         $task->users()->saveMany($users);
 
-        return response()->json(status: SymfonyResponse::HTTP_ACCEPTED);
+        return response()->json(status:SymfonyResponse::HTTP_ACCEPTED);
     }
 
     /**
@@ -213,7 +218,7 @@ class TaskController extends Controller
      */
     public function delete(Task $task): JsonResponse
     {
-        $task->deleteOrFail();
-        return response()->json(status: SymfonyResponse::HTTP_ACCEPTED);
+        $this->repository->delete(id:$task->id);
+        return response()->json(status:SymfonyResponse::HTTP_ACCEPTED);
     }
 }
