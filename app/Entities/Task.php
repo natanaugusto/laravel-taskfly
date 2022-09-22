@@ -3,11 +3,9 @@
 namespace App\Entities;
 
 use App\Models\User;
-use Database\Factories\TaskFactory;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -38,11 +36,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  *     required=true,
  *     @OA\JsonContent(ref="#/components/schemas/Task"),
  * )
- */
-/**
- * Class Task.
- *
- * @package namespace App\Entities;
  */
 class Task extends Model implements Transformable
 {

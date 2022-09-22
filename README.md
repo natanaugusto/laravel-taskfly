@@ -47,6 +47,14 @@ $ sail npm install --verbose
 $ sail npm run build
 $ sail test
 ```
+### Generate the Swagger documentation
+This project uses [L5-Swagger](https://github.com/DarkaOnLine/L5-Swagger) to generate an [OpenAPI](https://www.openapis.org)/[Swagger](https://swagger.io/) documentation.
+
+To generate the `storage/api-docs/api-docs.json` just run the command below:
+```shell
+$ sail artisan l5-swagger:generate
+```
+
 ### Creating dummy data
 We'll use [Laravel Tinker](https://laravel.com/docs/9.x/artisan#tinker) to create fake data. This will create 200 tasks on the database.
 
@@ -54,14 +62,14 @@ We'll use [Laravel Tinker](https://laravel.com/docs/9.x/artisan#tinker) to creat
 $ sail tinker
 
 Psy Shell v0.11.8 (PHP 8.1.9 — cli) by Justin Hileman
->>> Task::factory(200)->create()
+>>> App\\Entities\\Task::factory(200)->create()
 ```
 ### If all goes right
 
 Our local instance is up and filled with dummy data.
 
+- [Login](http://localhost/login)
 - [Register a user](http://localhost/register)
-- [Login](http://localhost/register)
 
 ## Maybe Stack
 - Laravel
