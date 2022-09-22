@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Task;
+use App\Entities\Task;
 use Illuminate\Contracts\View\View;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;

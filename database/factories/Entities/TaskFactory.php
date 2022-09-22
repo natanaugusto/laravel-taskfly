@@ -1,17 +1,18 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Entities;
 
-use App\Models\Task;
+use App\Entities\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Task>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Entities\Task>
  */
 class TaskFactory extends Factory
 {
+    protected $model = Task::class;
     /**
      * Define the model's default state.
      *

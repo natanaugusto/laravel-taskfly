@@ -1,15 +1,16 @@
 <?php
 
+use App\Models\User;
+use App\Entities\Task;
+use App\Mail\TaskChanged;
 use App\Events\TaskSaved;
 use App\Listeners\TaskListener;
-use App\Mail\TaskChanged;
-use App\Models\User;
-use App\Models\Task;
-use Illuminate\Events\CallQueuedListener;
+
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Events\CallQueuedListener;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
