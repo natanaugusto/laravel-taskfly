@@ -15,6 +15,12 @@ use function Pest\Laravel\assertSoftDeleted;
 
 beforeEach(function () {
     /**
+     * @var User $user
+     */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    /**
      * @var TestableLivewire $component
      * @var TaskTable $instance
      */
@@ -38,7 +44,7 @@ it(description:'has a loadable page', closure:function () {
      * @var Collection|User
      */
     $user = User::factory()->create();
-    $tasks = Task::factory(count:50)->create();
+    $tasks = Task::factory(count:50)->create(['creator_id' => $user->id]);
 
     $response = actingAs($user)->get(route(name:'tasks'));
     $response->assertViewIs(value:'tasks');

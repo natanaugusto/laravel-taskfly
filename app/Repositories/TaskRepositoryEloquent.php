@@ -2,12 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Criteria\IamCreatorCriteriaCriteria;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\TaskRepository;
 use App\Entities\Task;
-use App\Validators\TaskValidator;
+use App\Repositories\TaskRepository;
+use App\Criteria\IamCreatorCriteriaCriteria;
+
+use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class TaskRepositoryEloquent.
@@ -25,8 +24,6 @@ class TaskRepositoryEloquent extends BaseRepository implements TaskRepository
     {
         return Task::class;
     }
-
-
 
     /**
      * Boot up the repository, pushing criteria

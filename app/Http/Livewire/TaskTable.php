@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Entities\Task;
+use App\Repositories\TaskRepository;
 use Illuminate\Contracts\View\View;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -65,6 +66,14 @@ class TaskTable extends DataTableComponent
             'refreshDatatable'
         ],
     ];
+
+    public function getRows()
+    {
+        $repository = app(abstract:TaskRepository::class);
+        $this->setBuilder($repository->getBuilder());
+        $this->baseQuery();
+        return $this->executeQuery();
+    }
 
     public function configure(): void
     {
