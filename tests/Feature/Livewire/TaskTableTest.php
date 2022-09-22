@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use App\Models\Task;
+use App\Entities\Task;
 use App\Http\Livewire\TaskTable;
 use App\Http\Livewire\Modals\Form;
 use App\Http\Livewire\Modals\Confirm;

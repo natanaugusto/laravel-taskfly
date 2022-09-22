@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
+use App\Entities\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;

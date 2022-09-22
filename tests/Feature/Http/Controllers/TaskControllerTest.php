@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Task;
+use App\Entities\Task;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;

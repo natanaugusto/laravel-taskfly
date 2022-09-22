@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Task;
+use App\Entities\Task;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;

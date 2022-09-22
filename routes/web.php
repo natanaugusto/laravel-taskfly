@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Task;
+use App\Entities\Task;
 use Illuminate\Support\Facades\Route;
 
 /*
