@@ -1,137 +1,160 @@
 <?php
 
-use App\Entities\Task;
 use App\Models\User;
+use App\Entities\Task;
+
 use Illuminate\Support\Arr;
+
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-test(description: 'Task Controller/API Read', closure: function () {
+use function Pest\Laravel\json;
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+
+it(description:'has a GET@/api/task to list all tasks', closure:function () {
+    /**
+     * @var User $user
+     */
     $user = User::factory()->create();
-    $response = $this
-        ->actingAs($user)
-        ->json(method: SymfonyRequest::METHOD_GET, uri: route(name: 'task.all'));
-    $response->assertStatus(status: SymfonyResponse::HTTP_NO_CONTENT)
+    actingAs($user);
+    $response = json(method:SymfonyRequest::METHOD_GET, uri:route(name:'task.all'));
+    $response->assertStatus(status:SymfonyResponse::HTTP_NO_CONTENT)
         ->assertNoContent();
-    $response = $this->json(
-        method: SymfonyRequest::METHOD_GET,
-        uri: route(name: 'task.view', parameters: ['task' => 1])
+    $response = json(
+        method:SymfonyRequest::METHOD_GET,
+        uri:route(name:'task.view', parameters:['task' => 1])
     );
-    $response->assertStatus(status: SymfonyResponse::HTTP_NOT_FOUND);
+    $response->assertStatus(status:SymfonyResponse::HTTP_NOT_FOUND);
 
     $tasks = Task::factory()->count(10)->create();
-    $response = $this->json(method: SymfonyRequest::METHOD_GET, uri: route(name: 'task.all'));
-    $response->assertStatus(status: SymfonyResponse::HTTP_OK);
-    // ->assertJsonFragment(data: ['data' => $tasks->toArray()]);
+    $response = json(method:SymfonyRequest::METHOD_GET, uri:route(name:'task.all'));
+    $response->assertStatus(status:SymfonyResponse::HTTP_OK);
+    // ->assertJsonFragment(data:['data' => $tasks->toArray()]);
 
-    $response = $this->json(
-        method: SymfonyRequest::METHOD_GET,
-        uri: route(name: 'task.view', parameters: ['task' => $tasks[1]])
+    $response = json(
+        method:SymfonyRequest::METHOD_GET,
+        uri:route(name:'task.view', parameters:['task' => $tasks[1]])
     );
-    $response->assertStatus(status: SymfonyResponse::HTTP_OK)
-        ->assertJsonFragment(data: $tasks[1]->toArray());
+    $response->assertStatus(status:SymfonyResponse::HTTP_OK)
+        ->assertJsonFragment(data:$tasks[1]->toArray());
 });
 
-test(description: 'Task Controller/API Create', closure: function () {
+it(description:'has a POST@/api/task to create a task', closure:function () {
+    /**
+     * @var User $user
+     */
     $user = User::factory()->create();
-    $response = $this
-        ->actingAs($user)
-        ->json(
-            method: SymfonyRequest::METHOD_POST,
-            uri: route(name: 'task.store'),
-            data: []
+    actingAs($user);
+    $response = json(
+            method:SymfonyRequest::METHOD_POST,
+            uri:route(name:'task.store'),
+            data:[]
         );
-    $response->assertStatus(status: SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
+    $response->assertStatus(status:SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
 
     $task = Arr::only(
-        array: Task::factory()->makeOne()->toArray(),
-        keys: ['title', 'due']
+        array:Task::factory()->makeOne()->toArray(),
+        keys:['title', 'due']
     );
-    $response = $this->json(
-        method: SymfonyRequest::METHOD_POST,
-        uri: route(name: 'task.store'),
-        data: $task
+    $response = json(
+        method:SymfonyRequest::METHOD_POST,
+        uri:route(name:'task.store'),
+        data:$task
     );
     $task['creator_id'] = $user->id;
-    $response->assertStatus(status: SymfonyResponse::HTTP_CREATED)
+    $response->assertStatus(status:SymfonyResponse::HTTP_CREATED)
         ->assertJsonFragment(
-            data: $task
+            data:$task
         );
-    $this->assertDatabaseHas(table: Task::class, data: $task);
+    assertDatabaseHas(table:Task::class, data:$task);
 });
 
-test(description: 'Task Controller/API Update', closure: function () {
-    $task = Task::factory()->create();
+it(description:'has an UPDATE@/api/task to update a task', closure:function () {
+    /**
+     * @var User $user
+     */
     $user = User::factory()->create();
-    $response = $this
-        ->actingAs($user)
-        ->json(
-            method: SymfonyRequest::METHOD_PUT,
-            uri: route(name: 'task.update', parameters: ['task' => $task]),
-            data: $task->toArray()
+    actingAs($user);
+    $task = Task::factory()->create();
+    $response = json(
+            method:SymfonyRequest::METHOD_PUT,
+            uri:route(name:'task.update', parameters:['task' => $task]),
+            data:$task->toArray()
         );
-    $response->assertStatus(status: SymfonyResponse::HTTP_NOT_MODIFIED);
+    $response->assertStatus(status:SymfonyResponse::HTTP_NOT_MODIFIED);
+
     $nTitle = 'New Task Title';
-    $response = $this->json(
-        method: SymfonyRequest::METHOD_PUT,
-        uri: route(name: 'task.update', parameters: ['task' => $task]),
-        data: ['title' => $nTitle]
+    $response = json(
+        method:SymfonyRequest::METHOD_PUT,
+        uri:route(name:'task.update', parameters:['task' => $task]),
+        data:['title' => $nTitle]
     );
-    $response->assertStatus(status: SymfonyResponse::HTTP_ACCEPTED)
+    $response->assertStatus(status:SymfonyResponse::HTTP_ACCEPTED)
         ->assertJsonFragment(['title' => $nTitle]);
-    $this->assertDatabaseHas(table: Task::class, data: ['id' => $task->id, 'title' => $nTitle]);
+    assertDatabaseHas(table:Task::class, data:['id' => $task->id, 'title' => $nTitle]);
 });
 
-test(description: 'Task Controller/API Delete', closure: function () {
-    $task = Task::factory()->create();
-
+it(description:'has a DELETE@/api/task to delete a task', closure:function () {
+    /**
+     * @var User $user
+     */
     $user = User::factory()->create();
-    $response = $this
-        ->actingAs($user)
-        ->json(
-            method: SymfonyRequest::METHOD_DELETE,
-            uri: route(name: 'task.delete', parameters: ['task' => $task])
-        );
-    $response->assertStatus(status: SymfonyResponse::HTTP_ACCEPTED);
+    actingAs($user);
+    $task = Task::factory()->create();
+    $response = json(
+        method:SymfonyRequest::METHOD_DELETE,
+        uri:route(name:'task.delete', parameters:['task' => $task])
+    );
+    $response->assertStatus(status:SymfonyResponse::HTTP_ACCEPTED);
 });
 
-test(description: 'Create Task with users related', closure: function () {
+it(description:'can create a task POST@/api/task with users related', closure:function () {
     $task = Arr::only(
-        array: Task::factory()->makeOne()->toArray(),
-        keys: ['title', 'due']
+        array:Task::factory()->makeOne()->toArray(),
+        keys:['title', 'due']
     );
     $users = User::factory()->count(3)->create();
     $task['users'] = $users->pluck('id')->all();
+    /**
+     * @var User $user
+     */
     $user = User::factory()->create();
-    $response = $this->actingAs($user)
-        ->json(
-            method: SymfonyRequest::METHOD_POST,
-            uri: route(name: 'task.store'),
-            data: $task
-        );
+    actingAs($user);
+    $response = json(
+        method:SymfonyRequest::METHOD_POST,
+        uri:route(name:'task.store'),
+        data:$task
+    );
     unset($task['users']);
     $task['creator_id'] = $user->id;
-    $response->assertStatus(status: SymfonyResponse::HTTP_CREATED)
+    $response->assertStatus(status:SymfonyResponse::HTTP_CREATED)
         ->assertJsonFragment(
-            data: $task
+            data:$task
         );
-    $this->assertDatabaseHas(table: Task::class, data: $task);
+    assertDatabaseHas(table:Task::class, data:$task);
 });
 
-test(description: 'Relate users with a Task', closure: function () {
+it(description:'has a PUT@/api/task/relate to relate user to a existent task', closure:function () {
     $task = Task::factory()->create();
     $users = User::factory()->count(3)->create();
+    /**
+     * @var User $user
+     */
     $user = User::factory()->create();
-    $response = $this->actingAs($user)
-        ->json(
-            method: SymfonyRequest::METHOD_PUT,
-            uri: route(name: 'task.relate', parameters: ['task' => $task]),
-            data: [
-                'users' => $users->pluck('id')->all()
-            ]
-        );
-    $response->assertStatus(status: SymfonyResponse::HTTP_ACCEPTED);
+    actingAs($user);
+    $response = json(
+        method:SymfonyRequest::METHOD_PUT,
+        uri:route(name:'task.relate', parameters:['task' => $task]),
+        data:[
+            'users' => $users->pluck('id')->all()
+        ]
+    );
+    $response->assertStatus(status:SymfonyResponse::HTTP_ACCEPTED);
     $task->refresh();
-    $taskUsers = array_map(callback: fn ($user) => Arr::except($user, ['pivot']), array: $task->users->toArray());
-    $this->assertEquals(expected: $users->toArray(), actual: $taskUsers);
+    $taskUsers = array_map(callback:fn ($user) => Arr::except(
+        array:$user,
+        keys:['pivot']
+    ), array:$task->users->toArray());
+    expect(value:$taskUsers)->toEqual(expected:$users->toArray());
 });
