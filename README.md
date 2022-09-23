@@ -71,13 +71,15 @@ Our local instance is up and filled with dummy data.
 - [Login](http://localhost/login)
 - [Register a user](http://localhost/register)
 
-## Maybe Stack
-- Laravel
-  - Socialite
-  - Sail
-  - Livewire
-- Pest
-- Laravel Permission
-- Swagger/OpenAPI
-- ?Laravel Repository
-- ?Laravel Module
+## Stack
+This is the package used on this project. I'm very thankful for all of them
+- [Laravel 9](https://laravel.com/docs/9.x)
+- [Laravel Sail](https://laravel.com/docs/9.x/sail)
+- [Laravel Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)
+- [Livewire](https://laravel-livewire.com)
+- [PestPHP](https://pestphp.com)
+- [Laravel 5 Repositories](http://andersonandra.de/l5-repository)
+- [Laravel Livewire Tables](https://rappasoft.com/docs/laravel-livewire-tables/v2/introduction)
+- [Wire Elements Modal](https://github.com/wire-elements/modal)
+- [WireUI Heroicons](https://livewire-wireui.com/docs/heroicons)
+- [TailwindCSS](https://tailwindcss.com)
