@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Entities\Task;
 use App\Repositories\TaskRepository;
 use Illuminate\Contracts\View\View;
+
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 
@@ -66,17 +67,11 @@ class TaskTable extends DataTableComponent
             'refreshDatatable'
         ],
     ];
-
-    public function getRows()
-    {
-        $repository = app(abstract:TaskRepository::class);
-        $this->setBuilder($repository->getBuilder());
-        $this->baseQuery();
-        return $this->executeQuery();
-    }
+    protected TaskRepository $repository;
 
     public function configure(): void
     {
+        $this->repository = app(abstract:TaskRepository::class);
         $areas = self::CONFIGURABLE_AREAS_VIEWS;
         $areas['toolbar-left-start'][1]['createButtonParams'] = array_merge(
             $this->editButtonParams,
@@ -126,14 +121,20 @@ class TaskTable extends DataTableComponent
         ];
     }
 
+    public function getRows()
+    {
+        $this->setBuilder($this->repository->getBuilder());
+        $this->baseQuery();
+        return $this->executeQuery();
+    }
+
     public function save(Task $task): bool
     {
-        if ((bool)count($task->toArray()) === true) {
-            return $task->save();
-        } elseif (is_object($this->model) && instance(abstract:Task::class, instance:$this->model)) {
-            return $this->model->save();
-        }
-        return false;
+        $arr = $task->toArray();
+        return $this->repository->updateOrCreate(
+            attributes:array_keys($arr),
+            values:array_values($arr)
+        );
     }
 
     public function delete(Task $task): bool
