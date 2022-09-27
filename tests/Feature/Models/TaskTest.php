@@ -11,8 +11,18 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
+
+beforeEach(closure:function () {
+    /**
+     * @var User $user
+     */
+    $this->user = User::factory()->create();
+    actingAs($this->user);
+});
+
 
 it(description:'has CRUD', closure:function () {
     $task = Task::factory()->create();

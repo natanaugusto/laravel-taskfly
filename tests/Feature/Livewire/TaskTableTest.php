@@ -5,6 +5,7 @@ use App\Models\Task;
 use App\Http\Livewire\TaskTable;
 use App\Http\Livewire\Modals\Form;
 use App\Http\Livewire\Modals\Confirm;
+
 use Carbon\Carbon;
 use Livewire\Testing\TestableLivewire;
 
@@ -14,7 +15,7 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
 
-beforeEach(function () {
+beforeEach(closure:function () {
     /**
      * @var User $user
      */
