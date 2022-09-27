@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ImCreatorScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +51,11 @@ class Task extends Model
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
     protected $fillable = ['creator_id', 'title', 'due'];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ImCreatorScope);
+    }
 
     public function save(array $options = []): bool
     {

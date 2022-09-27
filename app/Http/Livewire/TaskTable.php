@@ -119,12 +119,7 @@ class TaskTable extends DataTableComponent
 
     public function save(Task $task): bool
     {
-        if ((bool)count($task->toArray()) === true) {
-            return $task->save();
-        } elseif (is_object($this->model) && instance(abstract:Task::class, instance:$this->model)) {
-            return $this->model->save();
-        }
-        return false;
+        return $task->save();
     }
 
     public function delete(Task $task): bool

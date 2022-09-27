@@ -9,11 +9,18 @@ use Carbon\Carbon;
 use Livewire\Testing\TestableLivewire;
 
 use function Pest\Faker\faker;
+use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
 
 beforeEach(function () {
+    /**
+     * @var User $user
+     */
+    $this->user = User::factory()->create();
+    actingAs($this->user);
+
     /**
      * @var TestableLivewire $component
      * @var TaskTable $instance
@@ -34,13 +41,12 @@ it(description:'mounts', closure:function () {
 });
 
 it(description:'has a loadable page', closure:function () {
-    /**
-     * @var Collection|User
-     */
-    $user = User::factory()->create();
-    $tasks = Task::factory(count:50)->create();
+    Task::factory(count:50)->create();
+    $tasks = Task::factory(count:10)->create([
+        'creator_id' => $this->user->id
+    ]);
 
-    $response = actingAs($user)->get(route(name:'tasks'));
+    $response = get(route(name:'tasks'));
     $response->assertViewIs(value:'tasks');
     $response->assertSee(__(key:'Tasks'));
     $response->assertSeeLivewire(component:'task-table');
@@ -76,11 +82,6 @@ it(description:'saves(Create)', closure:function () {
 });
 
 it(description:'saves(Create) with modal form', closure:function () {
-    /**
-     * @var User $user
-     */
-    $user = User::factory()->createOne();
-    actingAs($user);
     /**
      * @var TestableLivewire $component
      * @var Form $instance
