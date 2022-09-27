@@ -47,6 +47,15 @@ $ sail npm install --verbose
 $ sail npm run build
 $ sail test
 ```
+
+### Generate the Swagger documentation
+This project uses [L5-Swagger](https://github.com/DarkaOnLine/L5-Swagger) to generate an [OpenAPI](https://www.openapis.org)/[Swagger](https://swagger.io/) documentation.
+
+To generate the `storage/api-docs/api-docs.json` just run the command below:
+```shell
+$ sail artisan l5-swagger:generate
+```
+
 ### Creating dummy data
 We'll use [Laravel Tinker](https://laravel.com/docs/9.x/artisan#tinker) to create fake data. This will create 200 tasks on the database.
 
@@ -60,16 +69,17 @@ Psy Shell v0.11.8 (PHP 8.1.9 — cli) by Justin Hileman
 
 Our local instance is up and filled with dummy data.
 
+- [Login](http://localhost/login)
 - [Register a user](http://localhost/register)
-- [Login](http://localhost/register)
 
-## Maybe Stack
-- Laravel
-  - Socialite
-  - Sail
-  - Livewire
-- Pest
-- Laravel Permission
-- Swagger/OpenAPI
-- ?Laravel Repository
-- ?Laravel Module
+## Stack
+This is the package used on this project. I'm very thankful for all of them
+- [Laravel 9](https://laravel.com/docs/9.x)
+- [Laravel Sail](https://laravel.com/docs/9.x/sail)
+- [Laravel Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)
+- [Livewire](https://laravel-livewire.com)
+- [PestPHP](https://pestphp.com)
+- [Laravel Livewire Tables](https://rappasoft.com/docs/laravel-livewire-tables/v2/introduction)
+- [Wire Elements Modal](https://github.com/wire-elements/modal)
+- [WireUI Heroicons](https://livewire-wireui.com/docs/heroicons)
+- [TailwindCSS](https://tailwindcss.com)
