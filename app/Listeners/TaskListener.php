@@ -2,12 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Mail\TaskChanged;
 use App\Events\TaskSaved;
+use App\Notifications\TaskSaved as NotificationsTaskSaved;
 
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Notification;
 
 class TaskListener implements ShouldQueue
 {
@@ -30,7 +30,10 @@ class TaskListener implements ShouldQueue
      */
     public function handle(TaskSaved $event)
     {
-        $mailable = new TaskChanged($event->task);
-        Mail::to(users:[$event->task->creator])->queue($mailable);
+        $creator = $event->task->creator;
+        Notification::send(
+            notifiables:[$creator],
+            notification:new NotificationsTaskSaved($event->task)
+        );
     }
 }

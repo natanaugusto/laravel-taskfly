@@ -5,11 +5,13 @@ use App\Listeners\TaskListener;
 use App\Mail\TaskChanged;
 use App\Models\User;
 use App\Models\Task;
-use Illuminate\Events\CallQueuedListener;
+use App\Notifications\TaskSaved as NotificationsTaskSaved;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Events\CallQueuedListener;
+use Illuminate\Support\Facades\Notification;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -45,6 +47,21 @@ it(description:'dispatch an event after save', closure:function () {
     Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
 });
 
+it(description:'send a notification as email after create a task', closure:function () {
+    Notification::fake();
+    $task = Task::factory()->makeOne(['creator_id' => $this->user->id]);
+    $task->save();
+    Notification::assertSentTo(
+        notifiable:[$this->user],
+        notification:NotificationsTaskSaved::class,
+        callback:function (NotificationsTaskSaved $notification) use ($task) {
+            expect(value:$notification->task->id)->toBe($task->id);
+            expect(value:$notification->toMail(notifiable:$this->user))->toBeInstanceOf(TaskChanged::class);
+            return true;
+        }
+    );
+});
+
 it(description:'enqueue a task listener when a task is saved', closure:function () {
     Queue::fake();
     $task = Task::factory()->makeOne();
@@ -53,13 +70,6 @@ it(description:'enqueue a task listener when a task is saved', closure:function 
         job:CallQueuedListener::class,
         callback:fn ($job) => $job->class === TaskListener::class
     );
-});
-
-it(description:'send an mail when a task is saved', closure:function () {
-    Mail::fake();
-    $task = Task::factory()->makeOne();
-    $task->save();
-    Mail::assertQueued(mailable:TaskChanged::class);
 });
 
 it(description:'can mass assignment', closure:function () {
