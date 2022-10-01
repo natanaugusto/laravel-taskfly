@@ -1,10 +1,11 @@
 <?php
 
-use App\Events\TaskSaved;
-use App\Listeners\TaskListener;
-use App\Mail\TaskChanged;
 use App\Models\User;
 use App\Models\Task;
+use App\Mail\TaskChanged;
+use App\Events\TaskSaved;
+use App\Events\TaskDeleted;
+use App\Listeners\TaskListener;
 use App\Notifications\TaskSaved as NotificationsTaskSaved;
 
 use Illuminate\Support\Arr;
@@ -39,12 +40,22 @@ it(description:'has CRUD', closure:function () {
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
 
-it(description:'dispatch an event after save', closure:function () {
+it(description:'dispatch an event after create/change a task', closure:function () {
     Event::fake();
     $task = Task::factory()->makeOne();
     $task->save();
     Event::assertDispatched(event:TaskSaved::class);
     Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
+
+    $newTitle = 'New Title';
+    $task->title = $newTitle;
+    $task->save();
+    Event::assertDispatched(event:TaskSaved::class);
+    Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
+
+    $task->delete();
+    Event::assertDispatched(event:TaskDeleted::class);
+    Event::assertListening(expectedEvent:TaskDeleted::class, expectedListener:TaskListener::class);
 });
 
 it(description:'send a notification as email after create a task', closure:function () {

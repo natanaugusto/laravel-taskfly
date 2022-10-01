@@ -46,6 +46,7 @@ class Task extends Model
 
     protected $dispatchesEvents = [
         'saved' => \App\Events\TaskSaved::class,
+        'deleted' => \App\Events\TaskDeleted::class,
     ];
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -55,7 +56,7 @@ class Task extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope(new ImCreatorScope);
+        static::addGlobalScope(new ImCreatorScope());
     }
 
     public function save(array $options = []): bool
