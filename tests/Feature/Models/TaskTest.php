@@ -1,11 +1,11 @@
 <?php
 
-use App\Events\TaskSaved;
-use App\Listeners\TaskListener;
-use App\Mail\TaskChanged;
 use App\Models\User;
 use App\Models\Task;
-use App\Notifications\TaskSaved as NotificationsTaskSaved;
+use App\Mail\TaskChanged;
+use App\Events\TaskSaved;
+use App\Listeners\TaskListener;
+use App\Notifications\ModelEvent;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
@@ -53,9 +53,9 @@ it(description:'send a notification as email after create a task', closure:funct
     $task->save();
     Notification::assertSentTo(
         notifiable:[$this->user],
-        notification:NotificationsTaskSaved::class,
-        callback:function (NotificationsTaskSaved $notification) use ($task) {
-            expect(value:$notification->task->id)->toBe($task->id);
+        notification:ModelEvent::class,
+        callback:function (ModelEvent $notification) use ($task) {
+            expect(value:$notification->event->getModel()->id)->toBe($task->id);
             expect(value:$notification->toMail(notifiable:$this->user))->toBeInstanceOf(TaskChanged::class);
             return true;
         }
