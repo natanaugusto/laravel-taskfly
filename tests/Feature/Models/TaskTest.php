@@ -3,7 +3,9 @@
 use App\Models\User;
 use App\Models\Task;
 use App\Mail\TaskChanged;
-use App\Events\TaskSaved;
+use App\Events\TaskCreated;
+use App\Events\TaskUpdated;
+use App\Events\TaskDeleted;
 use App\Listeners\TaskListener;
 use App\Notifications\ModelEvent;
 
@@ -39,12 +41,21 @@ it(description:'has CRUD', closure:function () {
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
 
-it(description:'dispatch an event after save', closure:function () {
+it(description:'dispatch an event after task changes', closure:function () {
     Event::fake();
     $task = Task::factory()->makeOne();
     $task->save();
-    Event::assertDispatched(event:TaskSaved::class);
-    Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
+    Event::assertDispatched(event:TaskCreated::class);
+    Event::assertListening(expectedEvent:TaskCreated::class, expectedListener:TaskListener::class);
+
+    $task->title = 'NewTitle';
+    $task->save();
+    Event::assertDispatched(event:TaskUpdated::class);
+    Event::assertListening(expectedEvent:TaskUpdated::class, expectedListener:TaskListener::class);
+
+    $task->delete();
+    Event::assertDispatched(event:TaskDeleted::class);
+    Event::assertListening(expectedEvent:TaskDeleted::class, expectedListener:TaskListener::class);
 });
 
 it(description:'send a notification as email after create a task', closure:function () {
@@ -56,7 +67,8 @@ it(description:'send a notification as email after create a task', closure:funct
         notification:ModelEvent::class,
         callback:function (ModelEvent $notification) use ($task) {
             expect(value:$notification->event->getModel()->id)->toBe($task->id);
-            expect(value:$notification->toMail(notifiable:$this->user))->toBeInstanceOf(TaskChanged::class);
+            expect(value:$notification->toMail(notifiable:$this->user))
+                ->toBeInstanceOf(TaskChanged::class);
             return true;
         }
     );
