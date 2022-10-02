@@ -17,7 +17,7 @@ class TaskChanged extends Notification
      *
      * @return void
      */
-    public function __construct(public Task $task)
+    public function __construct(public Task $task, public string $mailView)
     {
     }
 
@@ -40,7 +40,7 @@ class TaskChanged extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailTaskChanged($this->task))->to(address:$notifiable->email);
+        return (new MailTaskChanged($this->task, $this->mailView))->to(address:$notifiable->email);
     }
 
     /**

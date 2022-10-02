@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\TaskCreated;
+use App\Events\TaskUpdated;
 use App\Events\TaskDeleted;
-use App\Events\TaskSaved;
+
 use App\Listeners\TaskListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,7 +23,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        TaskSaved::class => [
+        TaskCreated::class => [
+            TaskListener::class,
+        ],
+        TaskUpdated::class => [
             TaskListener::class,
         ],
         TaskDeleted::class => [

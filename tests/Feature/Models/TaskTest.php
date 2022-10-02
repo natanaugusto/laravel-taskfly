@@ -1,11 +1,12 @@
 <?php
 
+use App\Events\TaskCreated;
 use App\Models\User;
 use App\Models\Task;
-use App\Mail\TaskChanged;
-use App\Events\TaskSaved;
 use App\Events\TaskDeleted;
+use App\Events\TaskUpdated;
 use App\Listeners\TaskListener;
+use App\Mail\TaskChanged as MailTaskChanged;
 use App\Notifications\TaskChanged as NotificationsTaskChanged;
 
 use Illuminate\Support\Arr;
@@ -44,21 +45,21 @@ it(description:'dispatch an event after create/change a task', closure:function 
     Event::fake();
     $task = Task::factory()->makeOne();
     $task->save();
-    Event::assertDispatched(event:TaskSaved::class);
-    Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
+    Event::assertDispatched(event:TaskCreated::class);
+    Event::assertListening(expectedEvent:TaskCreated::class, expectedListener:TaskListener::class);
 
     $newTitle = 'New Title';
     $task->title = $newTitle;
     $task->save();
-    Event::assertDispatched(event:TaskSaved::class);
-    Event::assertListening(expectedEvent:TaskSaved::class, expectedListener:TaskListener::class);
+    Event::assertDispatched(event:TaskUpdated::class);
+    Event::assertListening(expectedEvent:TaskUpdated::class, expectedListener:TaskListener::class);
 
     $task->delete();
     Event::assertDispatched(event:TaskDeleted::class);
     Event::assertListening(expectedEvent:TaskDeleted::class, expectedListener:TaskListener::class);
 });
 
-it(description:'send a notification as email after create a task', closure:function () {
+it(description:'send a notification as email after a task change', closure:function () {
     Notification::fake();
     $task = Task::factory()->makeOne(['creator_id' => $this->user->id]);
     $task->save();
@@ -67,10 +68,40 @@ it(description:'send a notification as email after create a task', closure:funct
         notification:NotificationsTaskChanged::class,
         callback:function (NotificationsTaskChanged $notification) use ($task) {
             expect(value:$notification->task->id)->toBe($task->id);
-            expect(value:$notification->toMail(notifiable:$this->user))->toBeInstanceOf(TaskChanged::class);
+            $mail = $notification->toMail(notifiable:$this->user);
+            expect(value:$mail->mailView)->toBe('mail.task-created');
+            expect(value:$mail)->toBeInstanceOf(MailTaskChanged::class);
             return true;
         }
     );
+
+    $task->title = 'NewTitle';
+    $task->save();
+    Notification::assertSentTo(
+        notifiable:[$this->user],
+        notification:NotificationsTaskChanged::class,
+        callback:function (NotificationsTaskChanged $notification) use ($task) {
+            expect(value:$notification->task->id)->toBe($task->id);
+            $mail = $notification->toMail(notifiable:$this->user);
+            expect(value:$mail->mailView)->toBe('mail.task-updated');
+            expect(value:$mail)->toBeInstanceOf(MailTaskChanged::class);
+            return true;
+        }
+    );
+
+    $task->delete();
+    Notification::assertSentTo(
+        notifiable:[$this->user],
+        notification:NotificationsTaskChanged::class,
+        callback:function (NotificationsTaskChanged $notification) use ($task) {
+            expect(value:$notification->task->id)->toBe($task->id);
+            $mail = $notification->toMail(notifiable:$this->user);
+            expect(value:$mail->mailView)->toBe('mail.task-deleted');
+            expect(value:$mail)->toBeInstanceOf(MailTaskChanged::class);
+            return true;
+        }
+    );
+
 });
 
 it(description:'enqueue a task listener when a task is changed', closure:function () {

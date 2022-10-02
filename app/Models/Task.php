@@ -45,7 +45,8 @@ class Task extends Model
     public const NAMESPACE_UUID = 'c8bc2dc4-0495-11ed-b939-0242ac120002';
 
     protected $dispatchesEvents = [
-        'saved' => \App\Events\TaskSaved::class,
+        'created' => \App\Events\TaskCreated::class,
+        'updated' => \App\Events\TaskUpdated::class,
         'deleted' => \App\Events\TaskDeleted::class,
     ];
     protected $casts = [

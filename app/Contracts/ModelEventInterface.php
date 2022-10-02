@@ -9,5 +9,7 @@ interface ModelEventInterface
 {
     function getModel(): Model;
 
+    function getMailView(): string;
+
     function getNotification(): Notification;
 }

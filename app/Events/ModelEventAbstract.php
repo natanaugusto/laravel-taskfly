@@ -11,6 +11,7 @@ abstract class ModelEventAbstract implements \App\Contracts\ModelEventInterface
      * @var Notification
      */
     protected string $notification;
+    protected string $mailView;
 
     public function __construct(protected Model $model)
     {
@@ -21,8 +22,13 @@ abstract class ModelEventAbstract implements \App\Contracts\ModelEventInterface
         return $this->model;
     }
 
+    public function getMailView(): string
+    {
+        return $this->mailView;
+    }
+
     public function getNotification(): Notification
     {
-        return new $this->notification($this->getModel());
+        return new $this->notification($this->getModel(), $this->getMailView());
     }
 }

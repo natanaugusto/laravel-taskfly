@@ -18,7 +18,7 @@ class TaskChanged extends Mailable
      *
      * @return void
      */
-    public function __construct(public Task $task)
+    public function __construct(public Task $task, public string $mailView)
     {
     }
 
@@ -32,6 +32,6 @@ class TaskChanged extends Mailable
         return $this->from(
             address:config(key:'mail.from.address'),
             name:config('mail.from.name')
-        )->markdown(view:'mail.task-changed');
+        )->markdown(view:$this->mailView);
     }
 }

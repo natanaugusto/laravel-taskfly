@@ -8,11 +8,12 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class TaskSaved extends ModelEventAbstract
+class TaskCreated extends ModelEventAbstract
 {
     use Dispatchable;
     use SerializesModels;
     use InteractsWithSockets;
 
     protected string $notification = TaskChanged::class;
+    protected string $mailView = 'mail.task-created';
 }
