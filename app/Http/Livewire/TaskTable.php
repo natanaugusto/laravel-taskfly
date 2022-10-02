@@ -3,11 +3,11 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
-use Illuminate\Contracts\View\View;
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
 
-use function Pest\Laravel\instance;
+use Illuminate\Contracts\View\View;
+
+use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
 
 class TaskTable extends DataTableComponent
 {

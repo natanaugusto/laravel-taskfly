@@ -7,8 +7,9 @@ use App\Events\TaskCreated;
 use App\Events\TaskUpdated;
 use App\Events\TaskDeleted;
 use App\Listeners\TaskListener;
+use App\Mail\ModelChanges;
 use App\Notifications\ModelEvent;
-
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -57,7 +58,7 @@ it(description:'dispatch an event after task changes', closure:function () {
     Event::assertDispatched(event:TaskDeleted::class);
     Event::assertListening(expectedEvent:TaskDeleted::class, expectedListener:TaskListener::class);
 });
-
+#TODO: Remove duplicated code
 it(description:'send a notification as email after create a task', closure:function () {
     Notification::fake();
     $task = Task::factory()->makeOne(['creator_id' => $this->user->id]);
@@ -66,9 +67,27 @@ it(description:'send a notification as email after create a task', closure:funct
         notifiable:[$this->user],
         notification:ModelEvent::class,
         callback:function (ModelEvent $notification) use ($task) {
-            expect(value:$notification->event->getModel()->id)->toBe($task->id);
-            expect(value:$notification->toMail(notifiable:$this->user))
-                ->toBeInstanceOf(TaskChanged::class);
+            assertModelEvent($notification, $this->user, model:$task);
+            return true;
+        }
+    );
+
+    $task->title = 'NewTitle';
+    Notification::assertSentTo(
+        notifiable:[$this->user],
+        notification:ModelEvent::class,
+        callback:function (ModelEvent $notification) use ($task) {
+            assertModelEvent($notification, $this->user, model:$task);
+            return true;
+        }
+    );
+
+    $task->delete();
+    Notification::assertSentTo(
+        notifiable:[$this->user],
+        notification:ModelEvent::class,
+        callback:function (ModelEvent $notification) use ($task) {
+            assertModelEvent($notification, $this->user, model:$task);
             return true;
         }
     );

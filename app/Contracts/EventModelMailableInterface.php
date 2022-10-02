@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 interface EventModelMailableInterface
 {
     function getModel(): Model;
-    function toMailable(): Mailable;
+    function getMailable(): Mailable;
 }

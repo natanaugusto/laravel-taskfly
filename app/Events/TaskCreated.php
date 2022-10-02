@@ -11,4 +11,6 @@ class TaskCreated extends BaseModel
     use Dispatchable;
     use SerializesModels;
     use InteractsWithSockets;
+
+    public string $markdownView = 'mail.task-created';
 }
