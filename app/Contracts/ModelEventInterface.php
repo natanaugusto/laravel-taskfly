@@ -3,8 +3,11 @@
 namespace App\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notification;
 
 interface ModelEventInterface
 {
-    public function getModel(): Model;
+    function getModel(): Model;
+
+    function getNotification(): Notification;
 }

@@ -2,14 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Mail\TaskChanged;
 use App\Models\Task;
+use App\Mail\TaskChanged as MailTaskChanged;
+
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskSaved extends Notification
+class TaskChanged extends Notification
 {
     use Queueable;
 
@@ -41,7 +40,7 @@ class TaskSaved extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new TaskChanged($this->task))->to(address:$notifiable->email);
+        return (new MailTaskChanged($this->task))->to(address:$notifiable->email);
     }
 
     /**

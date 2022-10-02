@@ -6,7 +6,7 @@ use App\Mail\TaskChanged;
 use App\Events\TaskSaved;
 use App\Events\TaskDeleted;
 use App\Listeners\TaskListener;
-use App\Notifications\TaskSaved as NotificationsTaskSaved;
+use App\Notifications\TaskChanged as NotificationsTaskChanged;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
@@ -64,8 +64,8 @@ it(description:'send a notification as email after create a task', closure:funct
     $task->save();
     Notification::assertSentTo(
         notifiable:[$this->user],
-        notification:NotificationsTaskSaved::class,
-        callback:function (NotificationsTaskSaved $notification) use ($task) {
+        notification:NotificationsTaskChanged::class,
+        callback:function (NotificationsTaskChanged $notification) use ($task) {
             expect(value:$notification->task->id)->toBe($task->id);
             expect(value:$notification->toMail(notifiable:$this->user))->toBeInstanceOf(TaskChanged::class);
             return true;
@@ -73,7 +73,7 @@ it(description:'send a notification as email after create a task', closure:funct
     );
 });
 
-it(description:'enqueue a task listener when a task is saved', closure:function () {
+it(description:'enqueue a task listener when a task is changed', closure:function () {
     Queue::fake();
     $task = Task::factory()->makeOne();
     $task->save();

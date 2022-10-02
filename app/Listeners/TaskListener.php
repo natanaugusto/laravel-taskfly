@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Contracts\ModelEventInterface;
-use App\Events\TaskSaved;
-use App\Notifications\TaskSaved as NotificationsTaskSaved;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,7 +32,7 @@ class TaskListener implements ShouldQueue
         $creator = $event->getModel()->creator;
         Notification::send(
             notifiables:[$creator],
-            notification:new NotificationsTaskSaved($event->getModel())
+            notification:$event->getNotification()
         );
     }
 }
