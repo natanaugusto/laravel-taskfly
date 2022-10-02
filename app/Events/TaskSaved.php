@@ -8,18 +8,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class TaskSaved
+class TaskSaved extends BaseModel
 {
     use Dispatchable;
     use SerializesModels;
     use InteractsWithSockets;
-
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(public Task $task)
-    {
-    }
 }

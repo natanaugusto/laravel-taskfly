@@ -3,13 +3,12 @@
 namespace App\Notifications;
 
 use App\Mail\TaskChanged;
-use App\Models\Task;
+use App\Contracts\EventModelMailableInterface;
+
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskSaved extends Notification
+class ModelEvent extends Notification
 {
     use Queueable;
 
@@ -18,7 +17,7 @@ class TaskSaved extends Notification
      *
      * @return void
      */
-    public function __construct(public Task $task)
+    public function __construct(public EventModelMailableInterface $event)
     {
     }
 
@@ -41,19 +40,6 @@ class TaskSaved extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new TaskChanged($this->task))->to(address:$notifiable->email);
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
+        return (new TaskChanged($this->event->getModel()))->to(address:$notifiable->email);
     }
 }
