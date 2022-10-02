@@ -2,9 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Mail\TaskChanged;
 use App\Contracts\EventModelMailableInterface;
-
+use App\Mail\ModelChanges;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
@@ -40,6 +39,6 @@ class ModelEvent extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new TaskChanged($this->event->getModel()))->to(address:$notifiable->email);
+        return ($this->event->getMailable())->to(address:$notifiable->email);
     }
 }

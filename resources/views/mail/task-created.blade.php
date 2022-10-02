@@ -1,9 +1,9 @@
 @component('mail::message')
 # Task
 
-{{ $task->title }}
+{{ $model->title }}
 
-{{ $task->due }}
+{{ $model->due }}
 
 Thanks,<br>
 {{ config('app.name') }}

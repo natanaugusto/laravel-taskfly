@@ -2,15 +2,15 @@
 
 namespace App\Events;
 
+use App\Mail\ModelChanges;
 use App\Contracts\EventModelMailableInterface;
-use App\Mail\TaskChanged;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Mail\Mailable;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseModel implements EventModelMailableInterface
 {
-    protected $mailable;
-
+    public string $markdownView;
     /**
      * Create a new event instance.
      *
@@ -25,8 +25,8 @@ abstract class BaseModel implements EventModelMailableInterface
         return $this->model;
     }
 
-    public function toMailable(): Mailable
+    public function getMailable(): Mailable
     {
-        return new TaskChanged($this->getModel());
+        return new ModelChanges($this->getModel(), $this->markdownView);
     }
 }

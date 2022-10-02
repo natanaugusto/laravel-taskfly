@@ -2,13 +2,13 @@
 
 namespace App\Mail;
 
-use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TaskChanged extends Mailable
+class ModelChanges extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -18,7 +18,7 @@ class TaskChanged extends Mailable
      *
      * @return void
      */
-    public function __construct(public Task $task)
+    public function __construct(public Model $model, public string $markdownView)
     {
     }
 
@@ -32,6 +32,6 @@ class TaskChanged extends Mailable
         return $this->from(
             address:config(key:'mail.from.address'),
             name:config('mail.from.name')
-        )->markdown(view:'mail.task-changed');
+        )->markdown(view:$this->markdownView);
     }
 }
