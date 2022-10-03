@@ -1,5 +1,5 @@
 @component('mail::message')
-# Task
+# Task Created
 
 {{ $model->title }}
 
