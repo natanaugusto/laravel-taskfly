@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
 use App\Models\Scopes\ImCreatorScope;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,9 +56,9 @@ class Task extends Model
     ];
     protected $fillable = ['creator_id', 'title', 'due'];
 
-    protected static function booted()
+    public function scopeTodo(Builder $query): Builder
     {
-        static::addGlobalScope(new ImCreatorScope);
+        return $query->where(column:'status', operator:'=', value:Status::Todo->value);
     }
 
     public function save(array $options = []): bool
@@ -71,6 +72,11 @@ class Task extends Model
             }
         }
         return parent::save($options);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ImCreatorScope());
     }
 
     protected static function shortcodefy(string $string): string
