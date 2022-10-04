@@ -2,6 +2,9 @@
 
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskComing;
+
+use Illuminate\Support\Facades\Notification;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\artisan;
@@ -12,6 +15,7 @@ beforeEach(closure:function () {
 
 it(description:'put the tasks on queue to be sended as notification', closure:function () {
     actingAs($this->user);
-    Task::factory(count:15)->create();
+    $count = 15;
+    Task::factory($count)->create();
     artisan(command:'task:send-notification')->assertExitCode(0);
 });

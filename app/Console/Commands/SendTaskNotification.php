@@ -4,7 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\Scopes\ImCreatorScope;
 use App\Models\Task;
+use App\Notifications\TaskComing;
 use Illuminate\Console\Command;
+
+use Illuminate\Support\Facades\Notification;
 
 class SendTaskNotification extends Command
 {
@@ -29,7 +32,13 @@ class SendTaskNotification extends Command
      */
     public function handle()
     {
-        $tasks = Task::withoutGlobalScope(ImCreatorScope::class)->get();
+        $tasks = Task::withoutGlobalScope(ImCreatorScope::class)
+            ->orderByDesc('due')
+            ->get();
+
+        foreach ($tasks as $task) {
+            Notification::send(notifiables:[$task->creator], notification:new TaskComing($task));
+        }
         return 0;
     }
 }

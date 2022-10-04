@@ -1,15 +1,14 @@
 <?php
 
+use App\Enums\Status;
 use App\Models\User;
 use App\Models\Task;
-use App\Mail\TaskChanged;
 use App\Events\TaskCreated;
 use App\Events\TaskUpdated;
 use App\Events\TaskDeleted;
 use App\Listeners\TaskListener;
-use App\Mail\ModelChanges;
 use App\Notifications\ModelEvent;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -58,6 +57,7 @@ it(description:'dispatch an event after task changes', closure:function () {
     Event::assertDispatched(event:TaskDeleted::class);
     Event::assertListening(expectedEvent:TaskDeleted::class, expectedListener:TaskListener::class);
 });
+
 #TODO: Remove duplicated code
 it(description:'send a notification as email after create a task', closure:function () {
     Notification::fake();
@@ -117,7 +117,7 @@ it(description:'can mass assignment', closure:function () {
 
     $task = Task::create($task);
     $task->refresh();
-    expect(value:$task->status)->toBe(expected:'todo');
+    expect(value:$task->status)->toBe(expected:Status::Todo->value);
 });
 
 it(description:'has creator relationship', closure:function () {
@@ -131,4 +131,18 @@ it(description:'has creator relationship', closure:function () {
     $task->users()->save(User::factory()->create());
     $task->refresh();
     expect(value:$task->users)->toHaveCount(4);
+});
+
+it(description:'has todo scope', closure:function () {
+    $todoCount = 5;
+    Task::factory(count:$todoCount)->create([
+        'creator_id' => $this->user->id,
+        'status' => Status::Todo->value
+    ]);
+    Task::factory(count:3)->create([
+        'creator_id' => $this->user->id,
+        'status' => Status::Doing->value
+    ]);
+    $scoped = Task::todo()->get();
+    expect(value:$scoped->count())->toBe(expected:$todoCount);
 });
