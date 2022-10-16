@@ -68,7 +68,11 @@ it(description:'has a loadable page', closure:function () {
     foreach ($tasks->chunk(size:$this->instance->getPerPage())[0] as $task) {
         foreach ($task->toArray() as $attr => $val) {
             if (in_array(needle:$attr, haystack:$columnsArr)) {
-                $response->assertSee(__(key:$val));
+                if ($val instanceof \App\Enums\Status) {
+                    $response->assertSee(__(key:$val->value));
+                } else {
+                    $response->assertSee(__(key:$val));
+                }
             }
         }
     }
