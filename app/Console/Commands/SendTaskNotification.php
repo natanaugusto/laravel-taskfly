@@ -33,6 +33,7 @@ class SendTaskNotification extends Command
     public function handle()
     {
         $tasks = Task::withoutGlobalScope(ImCreatorScope::class)
+            ->todo()
             ->orderByDesc('due')
             ->get();
 

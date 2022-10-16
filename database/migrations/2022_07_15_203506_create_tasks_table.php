@@ -25,9 +25,9 @@ return new class () extends Migration {
             $table->enum(
                 column: 'status',
                 allowed: array_map(
-                callback: static fn ($enum) => $enum->value,
-                array: Status::cases()
-            )
+                    callback: static fn ($enum) => $enum->value,
+                    array: Status::cases()
+                )
             )->default(Status::DEFAULT->value);
             $table->timestamps();
             $table->softDeletes();
