@@ -24,7 +24,8 @@ it(description:'put the tasks on queue to be sended as notification', closure:fu
     $count = 5;
     Task::factory($count)->create([
         'creator_id' => $this->user->id,
-        'status' => Status::Todo->value
+        'status' => Status::Todo->value,
+        'due' => Carbon::now(),
     ]);
     Notification::fake();
     artisan(command:'task:send-notification')->assertExitCode(0);
