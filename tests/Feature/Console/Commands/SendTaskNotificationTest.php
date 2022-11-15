@@ -1,11 +1,13 @@
 <?php
 
-use App\Enums\Status;
 use App\Models\Task;
 use App\Models\User;
+use App\Enums\Status;
 use App\Notifications\TaskComing;
 
 use Illuminate\Support\Facades\Notification;
+
+use Carbon\Carbon;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\artisan;
@@ -27,5 +29,26 @@ it(description:'put the tasks on queue to be sended as notification', closure:fu
     Notification::fake();
     artisan(command:'task:send-notification')->assertExitCode(0);
     Notification::assertCount(expectedCount:$count);
+    Notification::assertSentTo(notifiable:$this->user, notification:TaskComing::class);
+});
+
+
+it(description:'send notification for tasks with an exact due date', closure:function () {
+    $secondsDiff = 20;
+    $future = Carbon::now()->addSeconds(value:$secondsDiff);
+    $task = Task::factory()->createOne([
+        'creator_id' => $this->user->id,
+        'status' => Status::Todo->value,
+        'due' => $future->format(Task::DUE_DATETIME_FORMAT),
+    ]);
+
+    Carbon::setTestNow($future->subSeconds(value:$secondsDiff*2));
+    Notification::fake();
+    artisan(command:'task:send-notification')->assertExitCode(0);
+    Notification::assertNothingSent();
+
+    Carbon::setTestNow($task->due);
+    Notification::fake();
+    artisan(command:'task:send-notification')->assertExitCode(0);
     Notification::assertSentTo(notifiable:$this->user, notification:TaskComing::class);
 });

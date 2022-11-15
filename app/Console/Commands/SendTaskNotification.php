@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Scopes\ImCreatorScope;
 use App\Models\Task;
 use App\Notifications\TaskComing;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 use Illuminate\Support\Facades\Notification;
@@ -38,7 +39,13 @@ class SendTaskNotification extends Command
             ->get();
 
         foreach ($tasks as $task) {
-            Notification::send(notifiables:[$task->creator], notification:new TaskComing($task));
+            $now = Carbon::now();
+            if ($now->greaterThanOrEqualTo(date:$task->due)) {
+                Notification::send(
+                    notifiables:[$task->creator],
+                    notification:new TaskComing($task)
+                );
+            }
         }
         return 0;
     }
