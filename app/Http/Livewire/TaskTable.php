@@ -3,41 +3,45 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
-
 use Illuminate\Contracts\View\View;
-
-use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
+use Rappasoft\LaravelLivewireTables\Views\Column;
 
 class TaskTable extends DataTableComponent
 {
     public const PRIMARY_KEY = 'id';
+
     public const TABLE_ATTRS = [
-        'class' => 'max-w-full'
+        'class' => 'max-w-full',
     ];
+
     public const TABLE_TH_ATTRS = [
         'default' => false,
         'class' => 'place-content-center p-2 text-left text-xs font-medium whitespace-nowrap text-gray-500 uppercase tracking-wider dark:bg-gray-800 dark:text-gray-400',
     ];
+
     public const TABLE_TD_ATTRS = [
         'default' => false,
         'class' => 'p-2 whitespace-nowrap text-sm font-medium dark:text-white',
     ];
+
     public const TABLE_WRAPPER_ATTRS = [
         'default' => false,
         'class' => 'shadow border-b border-gray-200 dark:border-gray-700 sm:rounded-lg',
     ];
+
     public const CONFIGURABLE_AREAS_VIEWS = [
         'toolbar-left-start' => ['components.create-button', null],
     ];
 
     public $model = Task::class;
+
     public $editButtonParams = [
         'model' => Task::class,
         'inputsView' => 'tasks.inputs',
         'inputRules' => [
             'model.title' => 'required|string',
-            'model.due' => 'required|date_format:' . Task::DUE_DATETIME_FORMAT,
+            'model.due' => 'required|date_format:'.Task::DUE_DATETIME_FORMAT,
         ],
         'title' => 'Just edit that',
         'confirmBtnLabel' => 'Update',
@@ -46,23 +50,25 @@ class TaskTable extends DataTableComponent
             self::class,
             'save',
             null,
-            'refreshDatatable'
+            'refreshDatatable',
         ],
     ];
+
     public $createButtonParams = [
         'title' => 'Create a new one',
         'confirmBtnLabel' => 'Create',
     ];
+
     public $deleteButtonParams = [
         'title' => 'Are you sure?',
         'description' => 'Do you really sure that you want to exclude this register?',
         'confirmBtnLabel' => 'Delete',
-        'confirmBtnColor' => 'red' ,
+        'confirmBtnColor' => 'red',
         'confirmAction' => [
             self::class,
             'delete',
             null,
-            'refreshDatatable'
+            'refreshDatatable',
         ],
     ];
 

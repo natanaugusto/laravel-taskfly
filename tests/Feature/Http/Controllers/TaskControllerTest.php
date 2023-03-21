@@ -2,16 +2,13 @@
 
 use App\Models\Task;
 use App\Models\User;
-
 use Illuminate\Support\Arr;
-
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-
-use function Pest\Laravel\json;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\json;
 use function PHPUnit\Framework\assertEquals;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 beforeEach(closure:function () {
     /**
@@ -19,7 +16,6 @@ beforeEach(closure:function () {
      */
     $this->user = User::factory()->create();
     actingAs($this->user);
-
 });
 
 it(description:'has a @get:/task endpoint', closure:function () {
@@ -34,7 +30,7 @@ it(description:'has a @get:/task endpoint', closure:function () {
 
     Task::factory(count:15)->create();
     $tasks = Task::factory(count:10)->create([
-        'creator_id' => $this->user->id
+        'creator_id' => $this->user->id,
     ]);
     $response = json(method:SymfonyRequest::METHOD_GET, uri:route(name:'task.all'));
     $response->assertStatus(status:SymfonyResponse::HTTP_OK);
@@ -108,10 +104,9 @@ test(description:'has a @put:/task/relate endpoint ', closure:function () {
     );
     $response->assertStatus(status:SymfonyResponse::HTTP_ACCEPTED);
     $task->refresh();
-    $taskUsers = array_map(callback:fn($user) => Arr::except($user, ['pivot']), array:$task->users->toArray());
+    $taskUsers = array_map(callback:fn ($user) => Arr::except($user, ['pivot']), array:$task->users->toArray());
     assertEquals(expected:$users->toArray(), actual:$taskUsers);
 });
-
 
 it(description:'has an @update:/task endpoint', closure:function () {
     $task = Task::factory()->create(['creator_id' => $this->user->id]);
@@ -135,8 +130,8 @@ it(description:'has an @update:/task endpoint', closure:function () {
 it(description:'has a @delete:/task endpoint', closure:function () {
     $task = Task::factory()->create(['creator_id' => $this->user->id]);
     $response = json(
-            method:SymfonyRequest::METHOD_DELETE,
-            uri:route(name:'task.delete', parameters:['task' => $task])
-        );
+        method:SymfonyRequest::METHOD_DELETE,
+        uri:route(name:'task.delete', parameters:['task' => $task])
+    );
     $response->assertStatus(status:SymfonyResponse::HTTP_ACCEPTED);
 });

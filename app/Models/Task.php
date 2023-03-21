@@ -5,20 +5,20 @@ namespace App\Models;
 use App\Enums\Status;
 use App\Models\Scopes\ImCreatorScope;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
-use Ramsey\Uuid\Uuid;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenApi\Annotations as OA;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @OA\Schema(
  *     schema="Task",
  *     type="object",
  *     required={"creator_id","title","due"},
+ *
  *     @OA\Property(property="id",type="integer"),
  *     @OA\Property(property="uid",type="string"),
  *     @OA\Property(property="creator_id",type="integer"),
@@ -29,10 +29,12 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="created_at",type="string"),
  *     @OA\Property(property="updated_at",type="string")
  * ),
+ *
  * @OA\RequestBody(
  *     request="Task",
  *     description="Task request body",
  *     required=true,
+ *
  *     @OA\JsonContent(ref="#/components/schemas/Task"),
  * )
  */
@@ -42,7 +44,9 @@ class Task extends Model
     use SoftDeletes;
 
     public const SHORTCODE_LENGTH = 8;
+
     public const DUE_DATETIME_FORMAT = 'Y-m-d H:i:s';
+
     public const NAMESPACE_UUID = 'c8bc2dc4-0495-11ed-b939-0242ac120002';
 
     protected $dispatchesEvents = [
@@ -50,10 +54,12 @@ class Task extends Model
         'updated' => \App\Events\TaskUpdated::class,
         'deleted' => \App\Events\TaskDeleted::class,
     ];
+
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
     protected $fillable = ['creator_id', 'title', 'due'];
 
     public function scopeTodo(Builder $query): Builder
@@ -63,7 +69,7 @@ class Task extends Model
 
     public function save(array $options = []): bool
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             if (empty($this->shortcode)) {
                 $this->shortcode = self::shortcodefy(string:$this->title);
             }
@@ -71,6 +77,7 @@ class Task extends Model
                 $this->uuid = Uuid::uuid5(ns:self::NAMESPACE_UUID, name:$this->title);
             }
         }
+
         return parent::save($options);
     }
 
@@ -86,7 +93,7 @@ class Task extends Model
         $strLen = strlen(string:$string);
         $m = intval(value:ceil(num:$strLen / (self::SHORTCODE_LENGTH / 2)));
         while (strlen(string:$short) < self::SHORTCODE_LENGTH / 2 - 1) {
-            if ($m < $strLen && !empty($string[$m])) {
+            if ($m < $strLen && ! empty($string[$m])) {
                 $short .= $string[$m];
                 $m += $m;
             } else {
@@ -102,6 +109,7 @@ class Task extends Model
             pad_string:'0',
             pad_type:STR_PAD_LEFT
         );
+
         return "#{$short}-{$code}";
     }
 

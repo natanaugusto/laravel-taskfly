@@ -7,7 +7,9 @@ use Illuminate\Contracts\View\View;
 class Confirm extends Modal
 {
     public $description;
+
     public $icon = 'exclamation';
+
     public $iconColor = 'red';
 
     public function render(): View

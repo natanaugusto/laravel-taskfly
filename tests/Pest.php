@@ -1,14 +1,12 @@
 <?php
 
-use App\Models\User;
 use App\Mail\ModelChanges;
+use App\Models\User;
 use App\Notifications\ModelEvent;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use Tests\TestCase;
 use Livewire\Livewire;
+use Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,13 +58,14 @@ function createLivewireComponentInstance(string $name, array $params = []): arra
     $component->assertHasNoErrors();
     $instance = $component->instance();
     expect(value:$instance)->toBeInstanceOf(class :$name);
+
     return compact(var_name:['component', 'instance']);
 }
 
-function assertModelEvent(ModelEvent $notification, User $user, Model $model) {
+function assertModelEvent(ModelEvent $notification, User $user, Model $model)
+{
     expect(value:$notification->event->getModel()->id)->toBe(expected:$model->id);
     $mail = $notification->toMail(notifiable:$user);
     expect(value:$mail)->toBeInstanceOf(class:ModelChanges::class);
     expect(value:$mail->markdownView)->toBe(expected:$notification->event->markdownView);
-
 }

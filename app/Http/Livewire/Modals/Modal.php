@@ -3,20 +3,26 @@
 namespace App\Http\Livewire\Modals;
 
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Exceptions\PublicPropertyNotFoundException;
 use LivewireUI\Modal\ModalComponent;
 use Psy\Exception\TypeErrorException;
-use Livewire\Exceptions\PublicPropertyNotFoundException;
 
 abstract class Modal extends ModalComponent
 {
     public const ACCEPTS_MODEL_AS = ['object', 'integer'];
+
     public $title;
+
     public $confirmBtnLabel = 'Ok';
+
     public $confirmBtnColor = 'blue';
+
     public $cancelBtnLabel = 'Cancel';
+
     public $cancelBtnColor = 'gray';
+
     /**
-     * @var null|array [$class, $action, $model, $event]
+     * @var null|array [$class,, $model, $event]
      */
     public $confirmAction = null;
 
@@ -28,7 +34,7 @@ abstract class Modal extends ModalComponent
             throw new PublicPropertyNotFoundException(property:'confirmAction', component:__CLASS__);
         }
 
-        list($class, $action, $model, $event) = $this->confirmAction;
+        [$class, $action, $model, $event] = $this->confirmAction;
         $model = $this->setInstance(app()->make(abstract:$class))->getModel($model);
 
         if ($this->instance->{$action}($model)) {
@@ -47,6 +53,7 @@ abstract class Modal extends ModalComponent
     public function setInstance(object $instance): self
     {
         $this->instance = $instance;
+
         return $this;
     }
 
@@ -58,9 +65,10 @@ abstract class Modal extends ModalComponent
             }
         } else {
             throw new TypeErrorException(
-                'ConfirmModal just accept ' . implode(separator:',', array:self::ACCEPTS_MODEL_AS) . '. ' . gettype($model) . ' was passed'
+                'ConfirmModal just accept '.implode(separator:',', array:self::ACCEPTS_MODEL_AS).'. '.gettype($model).' was passed'
             );
         }
+
         return $model;
     }
 }

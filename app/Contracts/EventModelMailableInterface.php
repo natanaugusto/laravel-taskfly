@@ -2,11 +2,12 @@
 
 namespace App\Contracts;
 
-use Illuminate\Mail\Mailable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Mailable;
 
 interface EventModelMailableInterface
 {
-    function getModel(): Model;
-    function getMailable(): Mailable;
+    public function getModel(): Model;
+
+    public function getMailable(): Mailable;
 }

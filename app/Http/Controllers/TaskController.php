@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -14,15 +14,19 @@ class TaskController extends Controller
     /**
      * @OA\Get(
      *     path="/api/task",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="List all tasks",
+     *
      *         @OA\JsonContent(
      *             type="array",
+     *
      *             @OA\Items(ref="#/components/schemas/Task"),
      *             example="[{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-1716:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}]"
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No content"
@@ -32,6 +36,7 @@ class TaskController extends Controller
     public function all(): JsonResponse
     {
         $tasks = Task::paginate();
+
         return $tasks->count() > 0
             ? response()->json(data: $tasks)
             : response()->json(status: SymfonyResponse::HTTP_NO_CONTENT);
@@ -40,24 +45,30 @@ class TaskController extends Controller
     /**
      * @OA\Get(
      *     path="/api/task/{task}",
+     *
      *     @OA\Parameter(
      *          name="task",
      *          in="path",
      *          description="Task ID",
      *          required=true,
+     *
      *          @OA\Schema(
      *               type="integer"
      *          )
      *      ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="View a task",
+     *
      *         @OA\JsonContent(
      *             type="array",
+     *
      *             @OA\Items(ref="#/components/schemas/Task"),
      *             example="{'id':1,'uuid':'4ee78f62-3170-5fa1-b518-5e39eca7b875','creator_id':1,'shortcode':'#PCST-0001','title':'Princess Schmidt','due':'2022-07-17 16:29:51','status':'doing','created_at':'2022-07-17T16:19:51.000000Z','updated_at':'2022-07-17T16:19:51.000000Z'}"
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found"
@@ -72,6 +83,7 @@ class TaskController extends Controller
     /**
      * @OA\Post(
      *     path="/api/task",
+     *
      *     @OA\Response(
      *         response="201",
      *         description="Created a task"
@@ -84,6 +96,7 @@ class TaskController extends Controller
      *         response="422",
      *         description="Validation error"
      *     ),
+     *
      *     @OA\RequestBody(ref="#/components/requestBodies/Task")
      * )
      */
@@ -91,7 +104,7 @@ class TaskController extends Controller
     {
         $request->validate(rules: [
             'title' => 'required',
-            'due' => ['required', 'date_format:' . Task::DUE_DATETIME_FORMAT],
+            'due' => ['required', 'date_format:'.Task::DUE_DATETIME_FORMAT],
             'users.*' => ['exists:users,id'],
         ]);
         if ($request->has(key: 'users')) {
@@ -101,7 +114,7 @@ class TaskController extends Controller
             $request->except(keys: ['users']),
             ['creator_id' => $request->user()->id]
         ));
-        if (!empty($users)) {
+        if (! empty($users)) {
             $users = User::findMany($users);
             $task->users()->saveMany($users);
         }
@@ -112,15 +125,18 @@ class TaskController extends Controller
     /**
      * @OA\Put(
      *     path="/api/task/{task}",
+     *
      *     @OA\Parameter(
      *          name="task",
      *          in="path",
      *          description="Task ID",
      *          required=true,
+     *
      *          @OA\Schema(
      *               type="integer"
      *          )
      *      ),
+     *
      *     @OA\Response(
      *         response="202",
      *         description="Updated a task"
@@ -137,6 +153,7 @@ class TaskController extends Controller
      *         response="422",
      *         description="Validation error"
      *     ),
+     *
      *     @OA\RequestBody(ref="#/components/requestBodies/Task")
      * )
      */
@@ -147,21 +164,25 @@ class TaskController extends Controller
             return response()->json(status: SymfonyResponse::HTTP_NOT_MODIFIED);
         }
         $task->save();
+
         return response()->json(data: $task, status: SymfonyResponse::HTTP_ACCEPTED);
     }
 
     /**
      * @OA\Post(
      *     path="/api/task/{task}/relate",
+     *
      *     @OA\Parameter(
      *          name="task",
      *          in="path",
      *          description="Task ID",
      *          required=true,
+     *
      *          @OA\Schema(
      *               type="integer"
      *          )
      *      ),
+     *
      *     @OA\Response(
      *         response="202",
      *         description="Users related with a task"
@@ -174,6 +195,7 @@ class TaskController extends Controller
      *         response="422",
      *         description="Validation error"
      *     ),
+     *
      *     @OA\RequestBody(ref="#/components/requestBodies/Task")
      * )
      */
@@ -192,15 +214,18 @@ class TaskController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/task/{task}",
+     *
      *     @OA\Parameter(
      *          name="task",
      *          in="path",
      *          description="Task ID",
      *          required=true,
+     *
      *          @OA\Schema(
      *               type="integer"
      *          )
      *      ),
+     *
      *     @OA\Response(
      *         response="202",
      *         description="Deleted a task"
@@ -214,6 +239,7 @@ class TaskController extends Controller
     public function delete(Task $task): JsonResponse
     {
         $task->deleteOrFail();
+
         return response()->json(status: SymfonyResponse::HTTP_ACCEPTED);
     }
 }

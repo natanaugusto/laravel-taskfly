@@ -5,13 +5,15 @@ namespace App\Http\Livewire\Modals;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Livewire\Exceptions\MissingRulesException;
 use Livewire\Exceptions\CannotBindToModelDataWithoutValidationRuleException;
+use Livewire\Exceptions\MissingRulesException;
 
 class Form extends Modal
 {
     public $model;
+
     public $inputRules;
+
     public $inputsView;
 
     public function mount(): void
@@ -41,10 +43,10 @@ class Form extends Modal
                     break;
                 }
             case 'integer':
-                if (!is_numeric(value:$model)) {
+                if (! is_numeric(value:$model)) {
                     throw new CannotBindToModelDataWithoutValidationRuleException(key:$model, component:$this);
                 }
-                if ((int)$model !== $this->model['id']) {
+                if ((int) $model !== $this->model['id']) {
                     throw new CannotBindToModelDataWithoutValidationRuleException(key:$model, component:$this);
                 }
                 $model = $this->instance->getModel()::find($this->model['id']);
@@ -54,6 +56,7 @@ class Form extends Modal
                 $model = $this->parseDefaultModel();
                 break;
         }
+
         return $model;
     }
 
@@ -75,7 +78,7 @@ class Form extends Modal
         if (is_null($model->creator_id)) {
             $model->creator_id = auth()->user()->id;
         }
-        return $model;
 
+        return $model;
     }
 }

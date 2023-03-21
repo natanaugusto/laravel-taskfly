@@ -15,7 +15,6 @@ beforeEach(function () {
     $this->instance = $instance;
 });
 
-
 it(description:'mount', closure:function () {
     $this->component
         ->assertViewIs(name:'livewire.modals.form')

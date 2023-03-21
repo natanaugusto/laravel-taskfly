@@ -1,20 +1,18 @@
 <?php
 
 use App\Enums\Status;
-use App\Models\User;
-use App\Models\Task;
 use App\Events\TaskCreated;
-use App\Events\TaskUpdated;
 use App\Events\TaskDeleted;
+use App\Events\TaskUpdated;
 use App\Listeners\TaskListener;
+use App\Models\Task;
+use App\Models\User;
 use App\Notifications\ModelEvent;
-
+use Illuminate\Events\CallQueuedListener;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Queue;
-use Illuminate\Events\CallQueuedListener;
 use Illuminate\Support\Facades\Notification;
-
+use Illuminate\Support\Facades\Queue;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
@@ -26,7 +24,6 @@ beforeEach(closure:function () {
     $this->user = User::factory()->create();
     actingAs($this->user);
 });
-
 
 it(description:'has CRUD', closure:function () {
     $task = Task::factory()->create();
@@ -58,7 +55,7 @@ it(description:'dispatch an event after task changes', closure:function () {
     Event::assertListening(expectedEvent:TaskDeleted::class, expectedListener:TaskListener::class);
 });
 
-#TODO: Remove duplicated code
+//TODO: Remove duplicated code
 it(description:'send a notification as email after create a task', closure:function () {
     Notification::fake();
     $task = Task::factory()->makeOne(['creator_id' => $this->user->id]);
@@ -68,6 +65,7 @@ it(description:'send a notification as email after create a task', closure:funct
         notification:ModelEvent::class,
         callback:function (ModelEvent $notification) use ($task) {
             assertModelEvent($notification, $this->user, model:$task);
+
             return true;
         }
     );
@@ -78,6 +76,7 @@ it(description:'send a notification as email after create a task', closure:funct
         notification:ModelEvent::class,
         callback:function (ModelEvent $notification) use ($task) {
             assertModelEvent($notification, $this->user, model:$task);
+
             return true;
         }
     );
@@ -88,6 +87,7 @@ it(description:'send a notification as email after create a task', closure:funct
         notification:ModelEvent::class,
         callback:function (ModelEvent $notification) use ($task) {
             assertModelEvent($notification, $this->user, model:$task);
+
             return true;
         }
     );
@@ -137,11 +137,11 @@ it(description:'has todo scope', closure:function () {
     $todoCount = 5;
     Task::factory(count:$todoCount)->create([
         'creator_id' => $this->user->id,
-        'status' => Status::Todo->value
+        'status' => Status::Todo->value,
     ]);
     Task::factory(count:3)->create([
         'creator_id' => $this->user->id,
-        'status' => Status::Doing->value
+        'status' => Status::Doing->value,
     ]);
     $scoped = Task::todo()->get();
     expect(value:$scoped->count())->toBe(expected:$todoCount);

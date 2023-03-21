@@ -1,19 +1,17 @@
 <?php
 
-use App\Models\User;
-use App\Models\Task;
-use App\Http\Livewire\TaskTable;
-use App\Http\Livewire\Modals\Form;
 use App\Http\Livewire\Modals\Confirm;
-
+use App\Http\Livewire\Modals\Form;
+use App\Http\Livewire\TaskTable;
+use App\Models\Task;
+use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Testing\TestableLivewire;
-
 use function Pest\Faker\faker;
-use function Pest\Laravel\get;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
+use function Pest\Laravel\get;
 
 beforeEach(closure:function () {
     /**
@@ -44,7 +42,7 @@ it(description:'mounts', closure:function () {
 it(description:'has a loadable page', closure:function () {
     Task::factory(count:50)->create();
     $tasks = Task::factory(count:10)->create([
-        'creator_id' => $this->user->id
+        'creator_id' => $this->user->id,
     ]);
 
     $response = get(route(name:'tasks'));
@@ -98,7 +96,7 @@ it(description:'saves(Create) with modal form', closure:function () {
             'inputsView' => 'tasks.inputs',
             'inputRules' => [
                 'model.title' => 'required|string',
-                'model.due' => 'required|date_format:' . Task::DUE_DATETIME_FORMAT,
+                'model.due' => 'required|date_format:'.Task::DUE_DATETIME_FORMAT,
             ],
             'description' => faker()->text(),
             'confirmBtnLabel' => 'Create',
@@ -153,7 +151,6 @@ it(description:'delete with modal confirmation', closure:function () {
     $component->assertEmitted('refreshDatatable');
     assertSoftDeleted(table:Task::class, data:['id' => $task->id]);
 });
-
 
 function getTableColumns(TaskTable $instance, TestableLivewire $component): array
 {

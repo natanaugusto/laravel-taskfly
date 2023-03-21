@@ -7,7 +7,6 @@ use App\Models\Task;
 use App\Notifications\TaskComing;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-
 use Illuminate\Support\Facades\Notification;
 
 class SendTaskNotification extends Command
@@ -47,6 +46,7 @@ class SendTaskNotification extends Command
                 );
             }
         }
+
         return 0;
     }
 }
