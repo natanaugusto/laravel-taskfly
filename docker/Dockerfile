@@ -16,7 +16,8 @@ RUN echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/re
 RUN apk update --no-cache
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apk add --no-cache --update shadow libcap readline curl bash supervisor sqlite
+RUN apk add --no-cache --update shadow libcap readline curl bash supervisor sqlite gosu@testing
+
 RUN apk add --no-cache --update \
     php81 \
     php81-dev \
@@ -46,9 +47,10 @@ RUN apk add --no-cache --update \
     php81-pecl-swoole \
     php81-pecl-memcached \
     php81-pecl-msgpack \
-    php81-pecl-igbinary \
-    && ln -s /usr/bin/php81 /usr/bin/php \
-    && php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+    php81-pecl-igbinary
+#    && ln -s /usr/bin/php81 /usr/bin/php
+
+RUN php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 RUN sed -i 's/;zend_extension=xdebug.so/zend_extension=xdebug.so/g' /etc/php81/conf.d/50_xdebug.ini \
     && sed -i 's/;xdebug.mode=off/xdebug.mode=${XDEBUG_MODE}/g' /etc/php81/conf.d/50_xdebug.ini
 
